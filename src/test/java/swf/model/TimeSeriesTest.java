@@ -37,6 +37,7 @@ public class TimeSeriesTest {
     LinkedList<Item<String>> flags2 = new LinkedList<Item<String>>();
     TimeSeries<String> timeSeries1 = new TimeSeries<String>(items1, flags1);
     TimeSeries<String> timeSeries2 = new TimeSeries<String>(items2, flags2);
+    assertFalse(timeSeries1.equals(""));
     assertTrue(timeSeries1.equals(timeSeries2));
     items1.add(new Item<String>(0, "1"));
     assertFalse(timeSeries1.equals(timeSeries2));
