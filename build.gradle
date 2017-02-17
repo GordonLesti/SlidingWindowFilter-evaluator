@@ -27,4 +27,14 @@ compileTestJava {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+pmd {
+    consoleOutput = true
+}
+
 mainClassName = 'swf.App'

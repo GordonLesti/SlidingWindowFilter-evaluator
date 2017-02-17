@@ -1,5 +1,7 @@
 package swf.model;
 
+import java.util.Objects;
+
 public class AccelerationData {
 
   private int axisX;
@@ -27,5 +29,22 @@ public class AccelerationData {
 
   public int getZ() {
     return this.axisZ;
+  }
+
+  /**
+   * Checks if the given object equals the AccelerationData.
+   */
+  public boolean equals(Object object) {
+    if (object instanceof AccelerationData) {
+      AccelerationData accel = (AccelerationData) object;
+      return this.getX() == accel.getX()
+          && this.getY() == accel.getY()
+          && this.getZ() == accel.getZ();
+    }
+    return false;
+  }
+
+  public int hashCode() {
+    return Objects.hash(this.getX(), this.getY(), this.getZ());
   }
 }

@@ -1,5 +1,7 @@
 package swf.model.timeseries;
 
+import java.util.Objects;
+
 public class Item<T> {
 
   private long time;
@@ -17,5 +19,20 @@ public class Item<T> {
 
   public T getData() {
     return this.data;
+  }
+
+  /**
+   * Checks if the given object equals the Item.
+   */
+  public boolean equals(Object object) {
+    if (object instanceof Item) {
+      Item item = (Item) object;
+      return this.getTime() == item.getTime() && this.getData().equals(item.getData());
+    }
+    return false;
+  }
+
+  public int hashCode() {
+    return Objects.hash(this.getTime(), this.getData());
   }
 }
