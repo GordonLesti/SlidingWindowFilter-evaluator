@@ -38,10 +38,10 @@ public class AccelerationDataTest {
 
   @Test
   public void testHashCode() {
-    int hashCode = (new AccelerationData(1, 2, 3)).hashCode();
-    assertNotEquals((new AccelerationData(-1, 2, 3)).hashCode(), hashCode);
-    assertNotEquals((new AccelerationData(1, -2, 3)).hashCode(), hashCode);
-    assertNotEquals((new AccelerationData(1, 2, -3)).hashCode(), hashCode);
-    assertEquals((new AccelerationData(1, 2, 3)).hashCode(), hashCode);
+    int hashCode = new AccelerationData(1, 2, 3).hashCode();
+    assertNotEquals(new AccelerationData(-1, 2, 3).hashCode(), hashCode);
+    assertNotEquals(new AccelerationData(1, -2, 3).hashCode(), hashCode);
+    assertNotEquals(new AccelerationData(1, 2, -3).hashCode(), hashCode);
+    assertEquals(new AccelerationData(1, 2, 3).hashCode(), hashCode);
   }
 }

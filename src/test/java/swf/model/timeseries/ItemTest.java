@@ -32,9 +32,9 @@ public class ItemTest {
 
   @Test
   public void testHashCode() {
-    int hashCode = (new Item<String>(0, "1")).hashCode();
-    assertNotEquals((new Item<String>(0, "2")).hashCode(), hashCode);
-    assertNotEquals((new Item<String>(1, "1")).hashCode(), hashCode);
-    assertEquals((new Item<String>(0, "1")).hashCode(), hashCode);
+    int hashCode = new Item<String>(0, "1").hashCode();
+    assertNotEquals(new Item<String>(0, "2").hashCode(), hashCode);
+    assertNotEquals(new Item<String>(1, "1").hashCode(), hashCode);
+    assertEquals(new Item<String>(0, "1").hashCode(), hashCode);
   }
 }
