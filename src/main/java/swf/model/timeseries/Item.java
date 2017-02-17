@@ -3,9 +3,7 @@ package swf.model.timeseries;
 import java.util.Objects;
 
 public class Item<T> {
-
   private long time;
-
   private T data;
 
   public Item(long time, T data) {

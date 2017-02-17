@@ -4,7 +4,6 @@ import swf.calculator.Distance;
 import swf.model.AccelerationData;
 
 public class AccelDistCalculator implements Distance<Double, AccelerationData> {
-
   /**
    * Calculates the euclidian distance between two AccelerationData objects.
    */

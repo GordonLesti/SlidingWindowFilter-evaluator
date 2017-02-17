@@ -10,7 +10,6 @@ import swf.model.timeseries.Item;
 import swf.service.AccelTimeSeries;
 
 public class AccelTimeSeriesTest {
-
   @Test
   public void testCreateAccelTimeSeriesFromFile() throws FileNotFoundException, IOException {
     LinkedList<Item<AccelerationData>> items = new LinkedList<Item<AccelerationData>>();

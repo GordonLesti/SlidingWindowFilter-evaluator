@@ -7,7 +7,6 @@ import org.junit.Test;
 import swf.model.AccelerationData;
 
 public class AccelerationDataTest {
-
   @Test
   public void testGetX() {
     AccelerationData data = new AccelerationData(1, 2, 3);

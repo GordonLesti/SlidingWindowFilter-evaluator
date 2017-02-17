@@ -7,7 +7,6 @@ import org.junit.Test;
 import swf.model.timeseries.Item;
 
 public class ItemTest {
-
   @Test
   public void testGetTime() {
     Item<String> item = new Item<String>(5, "");

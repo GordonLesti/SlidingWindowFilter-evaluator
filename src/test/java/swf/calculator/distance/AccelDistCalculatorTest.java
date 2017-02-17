@@ -5,7 +5,6 @@ import swf.calculator.distance.AccelDistCalculator;
 import swf.model.AccelerationData;
 
 public class AccelDistCalculatorTest {
-
   @Test
   public void testCalculateDistance() {
     AccelDistCalculator accelDistCalculator = new AccelDistCalculator();

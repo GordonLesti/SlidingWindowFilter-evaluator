@@ -5,9 +5,7 @@ import java.util.Objects;
 import swf.model.timeseries.Item;
 
 public class TimeSeries<T> {
-
   private List<Item<T>> items;
-
   private List<Item<String>> flags;
 
   public TimeSeries(List<Item<T>> items, List<Item<String>> flags) {

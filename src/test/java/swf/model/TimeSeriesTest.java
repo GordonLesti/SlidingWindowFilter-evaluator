@@ -10,7 +10,6 @@ import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 
 public class TimeSeriesTest {
-
   @Test
   public void testGetItems() {
     LinkedList<Item<String>> items = new LinkedList<Item<String>>();

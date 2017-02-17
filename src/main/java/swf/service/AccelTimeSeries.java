@@ -10,7 +10,6 @@ import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 
 public class AccelTimeSeries {
-
   /**
    * Creates a TimeSeries of AccelerationData object from a given filename.
    */

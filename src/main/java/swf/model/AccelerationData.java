@@ -3,11 +3,8 @@ package swf.model;
 import java.util.Objects;
 
 public class AccelerationData {
-
   private int axisX;
-
   private int axisY;
-
   private int axisZ;
 
   /**
