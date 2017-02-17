@@ -10,3 +10,6 @@ jdk:
 
 script:
   - gradle check
+
+after_success:
+  - gradle jacocoTestReport coveralls

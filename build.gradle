@@ -1,7 +1,11 @@
-apply plugin: 'java'
-apply plugin: 'checkstyle'
-apply plugin: 'pmd'
-apply plugin: 'application'
+plugins {
+    id 'java'
+    id 'checkstyle'
+    id 'pmd'
+    id 'application'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+}
 
 checkstyle {
     toolVersion = "7.5"
@@ -36,5 +40,14 @@ test {
 pmd {
     consoleOutput = true
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 mainClassName = 'swf.App'
