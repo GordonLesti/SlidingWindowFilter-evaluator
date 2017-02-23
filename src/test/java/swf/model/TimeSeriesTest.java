@@ -67,4 +67,20 @@ public class TimeSeriesTest {
     flags2.add(new Item<String>(0, "1"));
     assertEquals(timeSeries1.hashCode(), timeSeries2.hashCode());
   }
+
+  @Test
+  public void testToString() {
+    LinkedList<Item<String>> items = new LinkedList<Item<String>>();
+    items.add(new Item<String>(0, "1"));
+    items.add(new Item<String>(1, "2"));
+    LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
+    flags.add(new Item<String>(2, "3"));
+    flags.add(new Item<String>(3, "4"));
+    TimeSeries<String> timeSeries = new TimeSeries<String>(items, flags);
+    assertEquals(
+        "[Items:\n[[Time: 0, Data: 1], [Time: 1, Data: 2]],\nFlags:\n[[Time: 2, Data: 3], [Time: "
+            + "3, Data: 4]]]",
+        timeSeries.toString()
+    );
+  }
 }

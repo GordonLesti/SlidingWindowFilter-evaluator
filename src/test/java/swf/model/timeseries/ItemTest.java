@@ -36,4 +36,9 @@ public class ItemTest {
     assertNotEquals(new Item<String>(1, "1").hashCode(), hashCode);
     assertEquals(new Item<String>(0, "1").hashCode(), hashCode);
   }
+
+  @Test
+  public void testToString() {
+    assertEquals("[Time: 1, Data: 2]", new Item<String>(1, "2").toString());
+  }
 }

@@ -43,4 +43,9 @@ public class AccelerationDataTest {
     assertNotEquals(new AccelerationData(1, 2, -3).hashCode(), hashCode);
     assertEquals(new AccelerationData(1, 2, 3).hashCode(), hashCode);
   }
+
+  @Test
+  public void testToString() {
+    assertEquals("[1, 2, 3]", new AccelerationData(1, 2, 3).toString());
+  }
 }
