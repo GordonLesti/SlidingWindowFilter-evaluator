@@ -1,4 +1,4 @@
-package swf.transformer.timeseries;
+package swf.transformer.accel;
 
 import java.lang.IllegalArgumentException;
 import java.util.LinkedList;

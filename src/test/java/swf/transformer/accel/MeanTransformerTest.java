@@ -8,7 +8,7 @@ import swf.model.AccelerationData;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 import swf.service.AccelTimeSeries;
-import swf.transformer.timeseries.MeanTransformer;
+import swf.transformer.accel.MeanTransformer;
 
 public class MeanTransformerTest {
   @Test
