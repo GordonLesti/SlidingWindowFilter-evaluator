@@ -1,4 +1,4 @@
-package swf.calculator.distance;
+package swf.calculator.accel;
 
 import swf.calculator.Distance;
 import swf.model.AccelerationData;
