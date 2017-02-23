@@ -44,4 +44,8 @@ public class AccelerationData {
   public int hashCode() {
     return Objects.hash(this.getX(), this.getY(), this.getZ());
   }
+
+  public String toString() {
+    return "[" + this.getX() + ", " + this.getY() + ", " + this.getZ() + "]";
+  }
 }

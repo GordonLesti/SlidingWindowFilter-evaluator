@@ -33,4 +33,8 @@ public class Item<T> {
   public int hashCode() {
     return Objects.hash(this.getTime(), this.getData());
   }
+
+  public String toString() {
+    return "[Time: " + this.getTime() + ", Data: " + this.getData().toString() + "]";
+  }
 }

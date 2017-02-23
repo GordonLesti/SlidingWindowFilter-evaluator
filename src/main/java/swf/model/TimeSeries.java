@@ -36,4 +36,9 @@ public class TimeSeries<T> {
   public int hashCode() {
     return Objects.hash(this.getItems(), this.getFlags());
   }
+
+  public String toString() {
+    return "[Items:\n" + this.getItems().toString() + ",\nFlags:\n"
+        + this.getFlags().toString() + "]";
+  }
 }
