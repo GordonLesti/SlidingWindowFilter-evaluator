@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import org.junit.Test;
 import swf.accel.io.TimeSeriesParser;
-import swf.model.AccelerationData;
+import swf.accel.model.AccelerationData;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 

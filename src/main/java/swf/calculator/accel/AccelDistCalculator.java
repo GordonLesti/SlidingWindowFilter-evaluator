@@ -1,7 +1,7 @@
 package swf.calculator.accel;
 
+import swf.accel.model.AccelerationData;
 import swf.calculator.Distance;
-import swf.model.AccelerationData;
 
 public class AccelDistCalculator implements Distance<Double, AccelerationData> {
   /**

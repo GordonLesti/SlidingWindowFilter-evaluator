@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import swf.model.AccelerationData;
+import swf.accel.model.AccelerationData;
 
 public class AccelerationDataTest {
   @Test

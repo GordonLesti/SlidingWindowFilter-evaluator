@@ -2,8 +2,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.LinkedList;
 import org.junit.Test;
+import swf.accel.model.AccelerationData;
 import swf.calculator.accel.AccelMeanCalculator;
-import swf.model.AccelerationData;
 
 public class AccelMeanCalculatorTest {
   @Test

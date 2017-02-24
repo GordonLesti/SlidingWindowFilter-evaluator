@@ -1,8 +1,8 @@
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import swf.accel.model.AccelerationData;
 import swf.calculator.accel.AccelDistCalculator;
-import swf.model.AccelerationData;
 
 public class AccelDistCalculatorTest {
   @Test

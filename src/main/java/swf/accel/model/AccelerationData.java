@@ -1,4 +1,4 @@
-package swf.model;
+package swf.accel.model;
 
 import java.util.Objects;
 

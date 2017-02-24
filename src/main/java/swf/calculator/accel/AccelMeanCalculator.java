@@ -3,8 +3,8 @@ package swf.calculator.accel;
 import java.lang.IllegalArgumentException;
 import java.util.Iterator;
 import java.util.List;
+import swf.accel.model.AccelerationData;
 import swf.calculator.Mean;
-import swf.model.AccelerationData;
 
 public class AccelMeanCalculator implements Mean<AccelerationData> {
   /**
