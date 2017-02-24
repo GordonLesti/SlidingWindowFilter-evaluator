@@ -38,19 +38,19 @@ public class QuantizeTransformer implements TimeSeriesTransformer<AccelerationDa
       return 16;
     }
     if (accelValue > 100) {
-      return ((accelValue - 100) / 20) + 11;
+      return (accelValue - 100) / 20 + 11;
     }
     if (accelValue > 0) {
-      return (accelValue / 10) + 1;
+      return accelValue / 10 + 1;
     }
     if (accelValue == 0) {
       return 0;
     }
     if (accelValue >= -100) {
-      return (accelValue / 10) - 1;
+      return accelValue / 10 - 1;
     }
     if (accelValue >= -200) {
-      return ((accelValue + 100) / 20) - 11;
+      return (accelValue + 100) / 20 - 11;
     }
     return -16;
   }
