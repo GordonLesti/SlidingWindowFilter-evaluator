@@ -1,9 +1,8 @@
-package swf.calculator.accel;
+package swf.accel.calculator;
 
 import swf.accel.model.AccelerationData;
-import swf.calculator.Distance;
 
-public class AccelDistCalculator implements Distance<Double, AccelerationData> {
+public class Distance implements swf.calculator.Distance<Double, AccelerationData> {
   /**
    * Calculates the euclidian distance between two AccelerationData objects.
    */

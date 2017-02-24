@@ -1,13 +1,13 @@
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import swf.accel.calculator.Distance;
 import swf.accel.model.AccelerationData;
-import swf.calculator.accel.AccelDistCalculator;
 
-public class AccelDistCalculatorTest {
+public class DistanceTest {
   @Test
   public void testCalculateDistance() {
-    AccelDistCalculator accelDistCalculator = new AccelDistCalculator();
+    Distance accelDistCalculator = new Distance();
     assertEquals(
         Math.sqrt(50),
         accelDistCalculator.calculateDistance(
