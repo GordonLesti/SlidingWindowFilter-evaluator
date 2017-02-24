@@ -5,11 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 import swf.accel.model.AccelerationData;
 
-public class Mean implements swf.calculator.Mean<AccelerationData> {
+public class Mean implements swf.calculator.measure.Mean<AccelerationData> {
   /**
    * Calculates the mean of a list of AccelerationData objects.
    */
-  public AccelerationData calculateMean(List<AccelerationData> list) {
+  public AccelerationData calculate(List<AccelerationData> list) {
     if (list.size() == 0) {
       throw new IllegalArgumentException("Can not calculate mean of empty list");
     }

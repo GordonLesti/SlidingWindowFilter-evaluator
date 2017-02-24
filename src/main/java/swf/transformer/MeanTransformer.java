@@ -4,7 +4,7 @@ import java.lang.IllegalArgumentException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import swf.calculator.Mean;
+import swf.calculator.measure.Mean;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 
@@ -45,7 +45,7 @@ public class MeanTransformer<T> implements TimeSeriesTransformer<T> {
         if (tempDataList.size() == 0) {
           throw new IllegalArgumentException("TimeSeries is incomplete.");
         }
-        meanList.add(new Item<T>(fromTime, this.meanCalculator.calculateMean(tempDataList)));
+        meanList.add(new Item<T>(fromTime, this.meanCalculator.calculate(tempDataList)));
         tempDataList = new LinkedList<T>();
         fromTime += this.stepSize;
         toTime = fromTime + this.windowSize;
@@ -61,7 +61,7 @@ public class MeanTransformer<T> implements TimeSeriesTransformer<T> {
       }
     }
     if (!tempDataList.isEmpty()) {
-      meanList.add(new Item<T>(fromTime, this.meanCalculator.calculateMean(tempDataList)));
+      meanList.add(new Item<T>(fromTime, this.meanCalculator.calculate(tempDataList)));
     }
     return new TimeSeries<T>(meanList, timeSeries.getFlags());
   }

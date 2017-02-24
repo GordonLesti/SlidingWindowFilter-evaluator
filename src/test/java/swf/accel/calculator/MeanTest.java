@@ -13,6 +13,6 @@ public class MeanTest {
     list.add(new AccelerationData(9, -4, 3));
     list.add(new AccelerationData(-6, 5, 8));
     Mean accelMeanCalculator = new Mean();
-    assertEquals(new AccelerationData(0, -2, 5), accelMeanCalculator.calculateMean(list));
+    assertEquals(new AccelerationData(0, -2, 5), accelMeanCalculator.calculate(list));
   }
 }
