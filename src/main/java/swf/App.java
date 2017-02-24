@@ -1,34 +1,26 @@
 package swf;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import swf.accel.io.TimeSeriesParser;
+import swf.accel.model.AccelerationData;
+import swf.model.TimeSeries;
 
 public class App {
   /**
    * Starts the App.
    */
   public static void main(String[] args) {
-    String recordsDir = "build/resources/main/";
-    List<String> recordFilenames = getRecordFilenames(recordsDir);
-    Iterator<String> recordFilenameIterator = recordFilenames.iterator();
-    while (recordFilenameIterator.hasNext()) {
-      System.out.println(recordFilenameIterator.next());
+    TimeSeriesParser timeSeriesParser = new TimeSeriesParser();
+    String filename = "build/resources/main/record1.txt";
+    try {
+      TimeSeries<AccelerationData> timeSeries =
+          timeSeriesParser.parseTimeSeriesFromFile(filename);
+      System.out.println("YOYO");
+    } catch (FileNotFoundException fnfe) {
+      System.out.println("Can not find file " + filename);
+    } catch (IOException ioe) {
+      System.out.println("Problems while reading file " + filename);
     }
-  }
-
-  /**
-   * Returns a list of filenames from the given directory.
-   */
-  public static List<String> getRecordFilenames(String dirpath) {
-    File dir = new File(dirpath);
-    LinkedList<String> files = new LinkedList<String>();
-    for (File file : dir.listFiles()) {
-      if (file.isFile()) {
-        files.add(file.getName());
-      }
-    }
-    return files;
   }
 }
