@@ -4,14 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import org.junit.Test;
+import swf.accel.io.TimeSeriesParser;
 import swf.model.AccelerationData;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
-import swf.service.AccelTimeSeries;
 
-public class AccelTimeSeriesTest {
+public class TimeSeriesParserTest {
   @Test
-  public void testCreateAccelTimeSeriesFromFile() throws FileNotFoundException, IOException {
+  public void testParseTimeSeriesFromFile() throws FileNotFoundException, IOException {
     LinkedList<Item<AccelerationData>> items = new LinkedList<Item<AccelerationData>>();
     items.add(new Item<AccelerationData>(0, new AccelerationData(0, 0, 0)));
     items.add(new Item<AccelerationData>(0, new AccelerationData(17, 40, 90)));
@@ -30,8 +30,9 @@ public class AccelTimeSeriesTest {
     flags.add(new Item<String>(14278, "END 3"));
     TimeSeries<AccelerationData> assertedTimeSeries =
         new TimeSeries<AccelerationData>(items, flags);
+    TimeSeriesParser timeSeriesParser = new TimeSeriesParser();
     TimeSeries<AccelerationData> timeSeries =
-        AccelTimeSeries.createAccelTimeSeriesFromFile("build/resources/test/record1.txt");
+        timeSeriesParser.parseTimeSeriesFromFile("build/resources/test/record1.txt");
     assertEquals(assertedTimeSeries, timeSeries);
   }
 }

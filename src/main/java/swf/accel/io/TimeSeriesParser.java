@@ -1,4 +1,4 @@
-package swf.service;
+package swf.accel.io;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,11 +9,11 @@ import swf.model.AccelerationData;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 
-public class AccelTimeSeries {
+public class TimeSeriesParser implements swf.io.TimeSeriesParser<AccelerationData> {
   /**
    * Creates a TimeSeries of AccelerationData object from a given filename.
    */
-  public static TimeSeries<AccelerationData> createAccelTimeSeriesFromFile(String filename)
+  public TimeSeries<AccelerationData> parseTimeSeriesFromFile(String filename)
       throws FileNotFoundException, IOException {
     BufferedReader br = new BufferedReader(new FileReader(filename));
     String line;

@@ -4,11 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import org.junit.Test;
+import swf.accel.io.TimeSeriesParser;
 import swf.calculator.accel.AccelMeanCalculator;
 import swf.model.AccelerationData;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
-import swf.service.AccelTimeSeries;
 import swf.transformer.MeanTransformer;
 
 public class MeanTransformerTest {
@@ -24,8 +24,9 @@ public class MeanTransformerTest {
     assertedAccelList.add(new Item<AccelerationData>(1410, new AccelerationData(68, 99, 191)));
     LinkedList<Item<String>> assertedFlagsList = new LinkedList<Item<String>>();
     assertedFlagsList.add(new Item<String>(1320, "START 0"));
+    TimeSeriesParser timeSeriesParser = new TimeSeriesParser();
     TimeSeries<AccelerationData> timeSeries =
-        AccelTimeSeries.createAccelTimeSeriesFromFile("build/resources/test/record2.txt");
+        timeSeriesParser.parseTimeSeriesFromFile("build/resources/test/record2.txt");
     MeanTransformer<AccelerationData> meanTransformer =
         new MeanTransformer<AccelerationData>(50, 30, new AccelMeanCalculator());
     assertEquals(
