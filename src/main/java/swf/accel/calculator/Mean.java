@@ -1,12 +1,11 @@
-package swf.calculator.accel;
+package swf.accel.calculator;
 
 import java.lang.IllegalArgumentException;
 import java.util.Iterator;
 import java.util.List;
 import swf.accel.model.AccelerationData;
-import swf.calculator.Mean;
 
-public class AccelMeanCalculator implements Mean<AccelerationData> {
+public class Mean implements swf.calculator.Mean<AccelerationData> {
   /**
    * Calculates the mean of a list of AccelerationData objects.
    */
