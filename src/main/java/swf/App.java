@@ -10,6 +10,7 @@ import swf.accel.io.TimeSeriesParser;
 import swf.accel.model.AccelerationData;
 import swf.accel.transformer.QuantizeTransformer;
 import swf.calculator.distance.DynamicTimeWarping;
+import swf.calculator.measure.Complexity;
 import swf.model.TimeSeries;
 import swf.transformer.MeanTransformer;
 import swf.transformer.SubTransformer;
@@ -82,6 +83,25 @@ public class App {
       }
       System.out.println("+--------------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+\n");
       System.out.println(" _                        \n/  _ ._ _ ._ | _   o_|_   \n\\_(_)| | ||_)|(/_><| |_\\/ \n          |            /  \n");
+      Complexity<AccelerationData> complexity = new Complexity<AccelerationData>(new Distance());
+      iterator1 = library.iterator();
+      i = 0;
+      System.out.println("+--------------+-----------+----+");
+      System.out.println("|         Name |   Complex |  # |");
+      System.out.println("+--------------+-----------+----+");
+      while (iterator1.hasNext()) {
+        TimeSeries<AccelerationData> timeSeries1 = iterator1.next();
+        System.out.format("| Libgesture %d | %9.3f | %d |%n", i + 1, complexity.calculate(timeSeries1), timeSeries1.getItems().size());
+        i++;
+      }
+      Iterator<TimeSeries<AccelerationData>> iterator2 = gestures.iterator();
+      i = 0;
+      while (iterator2.hasNext()) {
+        TimeSeries<AccelerationData> timeSeries1 = iterator2.next();
+        System.out.format("|    Gesture %d | %9.3f | %d |%n", i + 1, complexity.calculate(timeSeries1), timeSeries1.getItems().size());
+        i++;
+      }
+      System.out.println("+--------------+-----------+----+");
     } catch (FileNotFoundException fnfe) {
       System.out.println("Can not find file " + filename);
     } catch (IOException ioe) {
