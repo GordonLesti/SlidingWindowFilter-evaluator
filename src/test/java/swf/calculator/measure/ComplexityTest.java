@@ -16,11 +16,12 @@ public class ComplexityTest {
     itemList.add(new Item<Integer>(0, -7));
     itemList.add(new Item<Integer>(0, 7));
     itemList.add(new Item<Integer>(0, 3));
-    Complexity<Integer> complexityCalculator = new Complexity<Integer>(new Distance<Double, Integer>() {
-      public Double calculateDistance(Integer int1, Integer int2) {
-        return 1.0 * Math.abs(int1 - int2);
-      }
-    });
+    Complexity<Integer> complexityCalculator =
+        new Complexity<Integer>(new Distance<Double, Integer>() {
+          public Double calculateDistance(Integer int1, Integer int2) {
+            return 1.0 * Math.abs(int1 - int2);
+          }
+        });
     assertEquals(
         Math.sqrt(372),
         complexityCalculator.calculate(

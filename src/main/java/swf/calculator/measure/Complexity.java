@@ -15,6 +15,9 @@ public class Complexity<T> implements Measure<Double, TimeSeries<T>> {
     this.distanceCalculator = distanceCalculator;
   }
 
+  /**
+   * Calculates the complexity of a timeSeries and returns it as Double.
+   */
   public Double calculate(TimeSeries<T> timeSeries) {
     double complexity = 0;
     List<Item<T>> items = timeSeries.getItems();
@@ -25,7 +28,10 @@ public class Complexity<T> implements Measure<Double, TimeSeries<T>> {
     Item<T> prevoisItem = iterator.next();
     while (iterator.hasNext()) {
       Item<T> item = iterator.next();
-      double distance = this.distanceCalculator.calculateDistance(prevoisItem.getData(), item.getData());
+      double distance = this.distanceCalculator.calculateDistance(
+          prevoisItem.getData(),
+          item.getData()
+      );
       complexity += distance * distance;
       prevoisItem = item;
     }
