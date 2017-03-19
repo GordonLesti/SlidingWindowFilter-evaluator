@@ -30,4 +30,62 @@ public class SubTransformerTest {
         subTransformer.transform(timeSeries)
     );
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testTransformDuplicateStartFlag() {
+    LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
+    flags.add(new Item<String>(36, "rLjCso9rJ1getwrF"));
+    flags.add(new Item<String>(53, "Rg45yJC5rBNNowEc"));
+    flags.add(new Item<String>(79, "rLjCso9rJ1getwrF"));
+    SubTransformer<String> subTransformer =
+        new SubTransformer<String>("rLjCso9rJ1getwrF", "Rg45yJC5rBNNowEc");
+    TimeSeries<String> timeSeries = new TimeSeries<String>(
+        new LinkedList<Item<String>>(),
+        flags
+    );
+    TimeSeries<String> subTimeSeries = subTransformer.transform(timeSeries);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testTransformDuplicateEndFlag() {
+    LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
+    flags.add(new Item<String>(36, "wiY0VbOydacAnKWu"));
+    flags.add(new Item<String>(53, "fHccuBuAepfkDmNe"));
+    flags.add(new Item<String>(79, "fHccuBuAepfkDmNe"));
+    SubTransformer<String> subTransformer =
+        new SubTransformer<String>("wiY0VbOydacAnKWu", "fHccuBuAepfkDmNe");
+    TimeSeries<String> timeSeries = new TimeSeries<String>(
+        new LinkedList<Item<String>>(),
+        flags
+    );
+    TimeSeries<String> subTimeSeries = subTransformer.transform(timeSeries);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testTransformDuplicateNoFlag() {
+    LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
+    flags.add(new Item<String>(36, "wiY0VbOydacAnKWu"));
+    flags.add(new Item<String>(53, "fHccuBuAepfkDmNe"));
+    SubTransformer<String> subTransformer =
+        new SubTransformer<String>("wiY0VbOydacAnKWu", "7fEoXOCeI8qOiLix");
+    TimeSeries<String> timeSeries = new TimeSeries<String>(
+        new LinkedList<Item<String>>(),
+        flags
+    );
+    TimeSeries<String> subTimeSeries = subTransformer.transform(timeSeries);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testTransformDuplicateWrongFlagOrder() {
+    LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
+    flags.add(new Item<String>(36, "wiY0VbOydacAnKWu"));
+    flags.add(new Item<String>(53, "fHccuBuAepfkDmNe"));
+    SubTransformer<String> subTransformer =
+        new SubTransformer<String>("fHccuBuAepfkDmNe", "wiY0VbOydacAnKWu");
+    TimeSeries<String> timeSeries = new TimeSeries<String>(
+        new LinkedList<Item<String>>(),
+        flags
+    );
+    TimeSeries<String> subTimeSeries = subTransformer.transform(timeSeries);
+  }
 }
