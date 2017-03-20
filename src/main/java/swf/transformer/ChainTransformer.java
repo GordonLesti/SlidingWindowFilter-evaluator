@@ -6,10 +6,14 @@ import swf.model.TimeSeries;
 
 public class ChainTransformer<T> implements TimeSeriesTransformer<T> {
   private List<TimeSeriesTransformer<T>> transformerList;
+
   public ChainTransformer(List<TimeSeriesTransformer<T>> transformerList) {
     this.transformerList = transformerList;
   }
 
+  /**
+   * Applies all transformers on the timeSeries.
+   */
   public TimeSeries<T> transform(TimeSeries<T> timeSeries) {
     TimeSeries<T> transformedTimeSeries = timeSeries;
     Iterator<TimeSeriesTransformer<T>> iterator = this.transformerList.iterator();
