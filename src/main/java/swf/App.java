@@ -9,7 +9,7 @@ import swf.accel.calculator.Mean;
 import swf.accel.io.TimeSeriesParser;
 import swf.accel.model.AccelerationData;
 import swf.accel.transformer.QuantizeTransformer;
-import swf.app.GestureDistanceInfo;
+import swf.app.evaluator.GestureDistanceInfo;
 import swf.calculator.distance.DynamicTimeWarping;
 import swf.calculator.distance.MaxMinQuotient;
 import swf.calculator.distance.MultiplyDistance;

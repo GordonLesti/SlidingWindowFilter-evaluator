@@ -1,9 +1,10 @@
-package swf.app;
+package swf.app.evaluator;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import swf.accel.model.AccelerationData;
+import swf.app.Evaluator;
 import swf.model.TimeSeries;
 import swf.nnc.NearestNeighbourClassificator;
 import swf.transformer.SubTransformer;
