@@ -32,8 +32,8 @@ public class App {
           chainTransformer.transform(timeSeriesParser.parseTimeSeriesFromFile(filename));
       DynamicTimeWarping<AccelerationData> dtw =
           new DynamicTimeWarping<AccelerationData>(new Distance());
-      GestureDistanceInfo gestureDistanceInfo =
-          new GestureDistanceInfo(new FullSearch<TimeSeries<AccelerationData>, Double>(dtw));
+      GestureDistanceInfo dtwGestureDistanceInfo =
+          new GestureDistanceInfo("DTW", new FullSearch<TimeSeries<AccelerationData>, Double>(dtw));
       LinkedList<TimeSeries<AccelerationData>> list =
           new LinkedList<TimeSeries<AccelerationData>>();
       for (int i = 1; i < 6; i++) {
@@ -43,7 +43,7 @@ public class App {
             )
         );
       }
-      System.out.println(gestureDistanceInfo.evaluate(list));
+      System.out.println(dtwGestureDistanceInfo.evaluate(list));
     } catch (FileNotFoundException fnfe) {
       System.out.println("Can not find file " + filename);
     } catch (IOException ioe) {

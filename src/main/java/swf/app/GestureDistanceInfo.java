@@ -9,11 +9,14 @@ import swf.nnc.NearestNeighbourClassificator;
 import swf.transformer.SubTransformer;
 
 public class GestureDistanceInfo implements Evaluator {
+  private String title;
   private NearestNeighbourClassificator<TimeSeries<AccelerationData>> nearestNeighbourClassificator;
 
   public GestureDistanceInfo(
+      String title,
       NearestNeighbourClassificator<TimeSeries<AccelerationData>> nearestNeighbourClassificator
   ) {
+    this.title = title;
     this.nearestNeighbourClassificator = nearestNeighbourClassificator;
   }
 
@@ -22,12 +25,7 @@ public class GestureDistanceInfo implements Evaluator {
    */
   public String evaluate(List<TimeSeries<AccelerationData>> timeSeriesList) {
     Iterator<TimeSeries<AccelerationData>> iterator = timeSeriesList.iterator();
-    String output = "    ____  _______       __\n"
-        + "   / __ \\/_  __/ |     / /\n"
-        + "  / / / / / /  | | /| / / \n"
-        + " / /_/ / / /   | |/ |/ /  \n"
-        + "/_____/ /_/    |__/|__/   \n"
-        + "                          \n";
+    String output = this.title + ":\n";
     String format = "| Record %d | %d | %d | %d | %d | %d | %d | %d | %d |\n";
     int recordIndex = 1;
     String top = "+----------+---+---+---+---+---+---+---+---+\n";
