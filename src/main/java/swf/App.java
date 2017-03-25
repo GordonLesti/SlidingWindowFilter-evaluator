@@ -11,6 +11,8 @@ import swf.accel.model.AccelerationData;
 import swf.accel.transformer.QuantizeTransformer;
 import swf.app.GestureDistanceInfo;
 import swf.calculator.distance.DynamicTimeWarping;
+import swf.calculator.distance.MaxMinQuotient;
+import swf.calculator.distance.MultiplyDistance;
 import swf.calculator.measure.Complexity;
 import swf.model.TimeSeries;
 import swf.nnc.FullSearch;
@@ -30,10 +32,22 @@ public class App {
     try {
       TimeSeries<AccelerationData> timeSeries =
           chainTransformer.transform(timeSeriesParser.parseTimeSeriesFromFile(filename));
+      Distance distance = new Distance();
       DynamicTimeWarping<AccelerationData> dtw =
-          new DynamicTimeWarping<AccelerationData>(new Distance());
+          new DynamicTimeWarping<AccelerationData>(distance);
+      MaxMinQuotient<TimeSeries<AccelerationData>> complexFactor =
+          new MaxMinQuotient<TimeSeries<AccelerationData>>(
+              new Complexity<AccelerationData>(distance)
+          );
+      MultiplyDistance<TimeSeries<AccelerationData>> complexDtw =
+          new MultiplyDistance<TimeSeries<AccelerationData>>(dtw, complexFactor);
       GestureDistanceInfo dtwGestureDistanceInfo =
           new GestureDistanceInfo("DTW", new FullSearch<TimeSeries<AccelerationData>, Double>(dtw));
+      GestureDistanceInfo complexDtwGestureDistanceInfo =
+          new GestureDistanceInfo(
+              "complexDTW",
+              new FullSearch<TimeSeries<AccelerationData>, Double>(complexDtw)
+          );
       LinkedList<TimeSeries<AccelerationData>> list =
           new LinkedList<TimeSeries<AccelerationData>>();
       for (int i = 1; i < 6; i++) {
@@ -44,6 +58,7 @@ public class App {
         );
       }
       System.out.println(dtwGestureDistanceInfo.evaluate(list));
+      System.out.println(complexDtwGestureDistanceInfo.evaluate(list));
     } catch (FileNotFoundException fnfe) {
       System.out.println("Can not find file " + filename);
     } catch (IOException ioe) {

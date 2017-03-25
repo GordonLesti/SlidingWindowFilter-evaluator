@@ -30,8 +30,14 @@ public class GestureDistanceInfo implements Evaluator {
     int recordIndex = 1;
     String top = "+----------+---+---+---+---+---+---+---+---+\n";
     output += top;
+    int matchCounter = 0;
     while (iterator.hasNext()) {
       int[] result = this.evaluateTimeSeries(iterator.next());
+      for (int i = 0; i < 8; i++) {
+        if (result[i] == i) {
+          matchCounter++;
+        }
+      }
       output += String.format(
           format,
           recordIndex,
@@ -46,7 +52,9 @@ public class GestureDistanceInfo implements Evaluator {
       );
       recordIndex++;
     }
-    return output + top;
+    output += top;
+    output += "Accuracy: " + ((matchCounter * 100.0) / (timeSeriesList.size() * 8.0)) + " %\n";
+    return output;
   }
 
   private int[] evaluateTimeSeries(TimeSeries<AccelerationData> timeSeries) {
