@@ -22,14 +22,36 @@ public class GestureDistanceInfo implements Evaluator {
    */
   public String evaluate(List<TimeSeries<AccelerationData>> timeSeriesList) {
     Iterator<TimeSeries<AccelerationData>> iterator = timeSeriesList.iterator();
-    String output = "";
+    String output = "    ____  _______       __\n"
+        + "   / __ \\/_  __/ |     / /\n"
+        + "  / / / / / /  | | /| / / \n"
+        + " / /_/ / / /   | |/ |/ /  \n"
+        + "/_____/ /_/    |__/|__/   \n"
+        + "                          \n";
+    String format = "| Record %d | %d | %d | %d | %d | %d | %d | %d | %d |\n";
+    int recordIndex = 1;
+    String top = "+----------+---+---+---+---+---+---+---+---+\n";
+    output += top;
     while (iterator.hasNext()) {
-      output += this.evaluateTimeSeries(iterator.next()) + "\n";
+      int[] result = this.evaluateTimeSeries(iterator.next());
+      output += String.format(
+          format,
+          recordIndex,
+          result[0],
+          result[1],
+          result[2],
+          result[3],
+          result[4],
+          result[5],
+          result[6],
+          result[7]
+      );
+      recordIndex++;
     }
-    return output;
+    return output + top;
   }
 
-  private String evaluateTimeSeries(TimeSeries<AccelerationData> timeSeries) {
+  private int[] evaluateTimeSeries(TimeSeries<AccelerationData> timeSeries) {
     LinkedList<TimeSeries<AccelerationData>> library =
         new LinkedList<TimeSeries<AccelerationData>>();
     LinkedList<TimeSeries<AccelerationData>> gestures =
@@ -41,13 +63,13 @@ public class GestureDistanceInfo implements Evaluator {
       subTransformer = new SubTransformer<AccelerationData>("START " + (i + 8), "END " + (i + 8));
       gestures.add(subTransformer.transform(timeSeries));
     }
-    String output = "";
+    int[] result = new int[8];
     for (int i = 0; i < 8; i++) {
       TimeSeries<AccelerationData> gesture = gestures.get(i);
-      output += i + " => " + library.indexOf(
+      result[i] = library.indexOf(
           this.nearestNeighbourClassificator.searchNearestNeighbour(gesture, library)
-      ) + "\n";
+      );
     }
-    return output;
+    return result;
   }
 }
