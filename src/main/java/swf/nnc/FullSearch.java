@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import swf.calculator.Distance;
 
-public class FullSearch<S, T extends Comparable<T>> implements NearestNeighbourClassificator<S> {
+public class FullSearch<S, T extends Comparable<T>> implements NearestNeighbourClassificator<S, T> {
   private Distance<T, S> distanceCalculator;
 
   public FullSearch(Distance<T, S> distanceCalculator) {
@@ -16,7 +16,7 @@ public class FullSearch<S, T extends Comparable<T>> implements NearestNeighbourC
   /**
    * Calculates the nearest neighbour to a given object.
    */
-  public S searchNearestNeighbour(S queryObject, Collection<S> objectCollection) {
+  public Result<S, T> searchNearestNeighbour(S queryObject, Collection<S> objectCollection) {
     Iterator<S> iterator = objectCollection.iterator();
     S minimum = iterator.next();
     T minimumDistance = this.distanceCalculator.calculateDistance(minimum, queryObject);
@@ -28,6 +28,6 @@ public class FullSearch<S, T extends Comparable<T>> implements NearestNeighbourC
         minimumDistance = distance;
       }
     }
-    return minimum;
+    return new Result<S, T>(minimum, minimumDistance);
   }
 }

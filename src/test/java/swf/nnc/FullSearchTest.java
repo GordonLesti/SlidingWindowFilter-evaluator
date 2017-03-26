@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import org.junit.Test;
 import swf.calculator.Distance;
 import swf.nnc.FullSearch;
+import swf.nnc.Result;
 
 public class FullSearchTest {
   @Test
@@ -20,6 +21,9 @@ public class FullSearchTest {
         }
     };
     FullSearch<Integer, Integer> fullSearch = new FullSearch<Integer, Integer>(distanceCalculator);
-    assertEquals(-72, (int) fullSearch.searchNearestNeighbour(-31, list));
+    assertEquals(
+        new Result<Integer, Integer>(-72, 41),
+        fullSearch.searchNearestNeighbour(-31, list)
+    );
   }
 }

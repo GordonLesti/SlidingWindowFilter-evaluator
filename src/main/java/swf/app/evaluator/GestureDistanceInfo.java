@@ -11,14 +11,14 @@ import swf.transformer.SubTransformer;
 
 public class GestureDistanceInfo implements Evaluator {
   private String title;
-  private NearestNeighbourClassificator<TimeSeries<AccelerationData>> nearestNeighbourClassificator;
+  private NearestNeighbourClassificator<TimeSeries<AccelerationData>, Double> nnc;
 
   public GestureDistanceInfo(
       String title,
-      NearestNeighbourClassificator<TimeSeries<AccelerationData>> nearestNeighbourClassificator
+      NearestNeighbourClassificator<TimeSeries<AccelerationData>, Double> nnc
   ) {
     this.title = title;
-    this.nearestNeighbourClassificator = nearestNeighbourClassificator;
+    this.nnc = nnc;
   }
 
   /**
@@ -74,7 +74,7 @@ public class GestureDistanceInfo implements Evaluator {
     for (int i = 0; i < 8; i++) {
       TimeSeries<AccelerationData> gesture = gestures.get(i);
       result[i] = library.indexOf(
-          this.nearestNeighbourClassificator.searchNearestNeighbour(gesture, library)
+          this.nnc.searchNearestNeighbour(gesture, library).getObject()
       );
     }
     return result;
