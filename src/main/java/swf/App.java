@@ -28,10 +28,7 @@ public class App {
   public static void main(String[] args) {
     TimeSeriesParser timeSeriesParser = new TimeSeriesParser();
     TimeSeriesTransformer<AccelerationData> chainTransformer = createTransformer();
-    String filename = "build/resources/main/record2.txt";
     try {
-      TimeSeries<AccelerationData> timeSeries =
-          chainTransformer.transform(timeSeriesParser.parseTimeSeriesFromFile(filename));
       Distance distance = new Distance();
       DynamicTimeWarping<AccelerationData> dtw =
           new DynamicTimeWarping<AccelerationData>(distance);
@@ -50,7 +47,7 @@ public class App {
           );
       LinkedList<TimeSeries<AccelerationData>> list =
           new LinkedList<TimeSeries<AccelerationData>>();
-      for (int i = 1; i < 6; i++) {
+      for (int i = 1; i < 8; i++) {
         list.add(
             chainTransformer.transform(
                 timeSeriesParser.parseTimeSeriesFromFile("build/resources/main/record" + i + ".txt")
@@ -60,9 +57,9 @@ public class App {
       System.out.println(dtwGestureDistanceInfo.evaluate(list));
       System.out.println(complexDtwGestureDistanceInfo.evaluate(list));
     } catch (FileNotFoundException fnfe) {
-      System.out.println("Can not find file " + filename);
+      System.out.println(fnfe.getMessage());
     } catch (IOException ioe) {
-      System.out.println("Problems while reading file " + filename);
+      System.out.println(ioe.getMessage());
     }
   }
 
