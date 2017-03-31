@@ -13,6 +13,7 @@ import swf.app.evaluator.GestureDistanceInfo;
 import swf.calculator.distance.DynamicTimeWarping;
 import swf.calculator.distance.MaxMinQuotient;
 import swf.calculator.distance.MultiplyDistance;
+import swf.calculator.measure.AverageComplexity;
 import swf.calculator.measure.Complexity;
 import swf.model.TimeSeries;
 import swf.nnc.FullSearch;
@@ -32,12 +33,17 @@ public class App {
       Distance distance = new Distance();
       DynamicTimeWarping<AccelerationData> dtw =
           new DynamicTimeWarping<AccelerationData>(distance);
+      Complexity<AccelerationData> complexity = new Complexity<AccelerationData>(distance);
       MaxMinQuotient<TimeSeries<AccelerationData>> complexFactor =
+          new MaxMinQuotient<TimeSeries<AccelerationData>>(complexity);
+      MaxMinQuotient<TimeSeries<AccelerationData>> averageComplexFactor =
           new MaxMinQuotient<TimeSeries<AccelerationData>>(
-              new Complexity<AccelerationData>(distance)
+              new AverageComplexity<AccelerationData>(complexity)
           );
       MultiplyDistance<TimeSeries<AccelerationData>> complexDtw =
           new MultiplyDistance<TimeSeries<AccelerationData>>(dtw, complexFactor);
+      MultiplyDistance<TimeSeries<AccelerationData>> averageComplexDTW =
+          new MultiplyDistance<TimeSeries<AccelerationData>>(dtw, averageComplexFactor);
       GestureDistanceInfo dtwGestureDistanceInfo =
           new GestureDistanceInfo("DTW", new FullSearch<TimeSeries<AccelerationData>, Double>(dtw));
       GestureDistanceInfo complexDtwGestureDistanceInfo =
@@ -45,6 +51,11 @@ public class App {
               "complexDTW",
               new FullSearch<TimeSeries<AccelerationData>, Double>(complexDtw)
           );
+      GestureDistanceInfo averageComplexDtwGestureDistInfo =
+        new GestureDistanceInfo(
+            "averageComplexDTW",
+            new FullSearch<TimeSeries<AccelerationData>, Double>(averageComplexDTW)
+        );
       LinkedList<TimeSeries<AccelerationData>> list =
           new LinkedList<TimeSeries<AccelerationData>>();
       for (int i = 1; i < 8; i++) {
@@ -56,6 +67,7 @@ public class App {
       }
       System.out.println(dtwGestureDistanceInfo.evaluate(list));
       System.out.println(complexDtwGestureDistanceInfo.evaluate(list));
+      System.out.println(averageComplexDtwGestureDistInfo.evaluate(list));
     } catch (FileNotFoundException fnfe) {
       System.out.println(fnfe.getMessage());
     } catch (IOException ioe) {
