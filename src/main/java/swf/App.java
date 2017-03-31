@@ -9,6 +9,7 @@ import swf.accel.calculator.Mean;
 import swf.accel.io.TimeSeriesParser;
 import swf.accel.model.AccelerationData;
 import swf.accel.transformer.QuantizeTransformer;
+import swf.app.Evaluator;
 import swf.app.evaluator.GestureDistanceInfo;
 import swf.calculator.distance.DynamicTimeWarping;
 import swf.calculator.distance.MaxMinQuotient;
@@ -30,32 +31,6 @@ public class App {
     TimeSeriesParser timeSeriesParser = new TimeSeriesParser();
     TimeSeriesTransformer<AccelerationData> chainTransformer = createTransformer();
     try {
-      Distance distance = new Distance();
-      DynamicTimeWarping<AccelerationData> dtw =
-          new DynamicTimeWarping<AccelerationData>(distance);
-      Complexity<AccelerationData> complexity = new Complexity<AccelerationData>(distance);
-      MaxMinQuotient<TimeSeries<AccelerationData>> complexFactor =
-          new MaxMinQuotient<TimeSeries<AccelerationData>>(complexity);
-      MaxMinQuotient<TimeSeries<AccelerationData>> averageComplexFactor =
-          new MaxMinQuotient<TimeSeries<AccelerationData>>(
-              new AverageComplexity<AccelerationData>(complexity)
-          );
-      MultiplyDistance<TimeSeries<AccelerationData>> complexDtw =
-          new MultiplyDistance<TimeSeries<AccelerationData>>(dtw, complexFactor);
-      MultiplyDistance<TimeSeries<AccelerationData>> averageComplexDTW =
-          new MultiplyDistance<TimeSeries<AccelerationData>>(dtw, averageComplexFactor);
-      GestureDistanceInfo dtwGestureDistanceInfo =
-          new GestureDistanceInfo("DTW", new FullSearch<TimeSeries<AccelerationData>, Double>(dtw));
-      GestureDistanceInfo complexDtwGestureDistanceInfo =
-          new GestureDistanceInfo(
-              "complexDTW",
-              new FullSearch<TimeSeries<AccelerationData>, Double>(complexDtw)
-          );
-      GestureDistanceInfo averageComplexDtwGestureDistInfo =
-        new GestureDistanceInfo(
-            "averageComplexDTW",
-            new FullSearch<TimeSeries<AccelerationData>, Double>(averageComplexDTW)
-        );
       LinkedList<TimeSeries<AccelerationData>> list =
           new LinkedList<TimeSeries<AccelerationData>>();
       for (int i = 1; i < 8; i++) {
@@ -65,14 +40,77 @@ public class App {
             )
         );
       }
-      System.out.println(dtwGestureDistanceInfo.evaluate(list));
-      System.out.println(complexDtwGestureDistanceInfo.evaluate(list));
-      System.out.println(averageComplexDtwGestureDistInfo.evaluate(list));
+      Evaluator[] evaluators = createEvaluators();
+      for (int i = 0; i < evaluators.length; i++) {
+        System.out.println(evaluators[i].evaluate(list));
+      }
     } catch (FileNotFoundException fnfe) {
       System.out.println(fnfe.getMessage());
     } catch (IOException ioe) {
       System.out.println(ioe.getMessage());
     }
+  }
+
+  private static Distance createDistance() {
+    return new Distance();
+  }
+
+  private static DynamicTimeWarping<AccelerationData> createDtw() {
+    return new DynamicTimeWarping<AccelerationData>(createDistance());
+  }
+
+  private static Complexity<AccelerationData> createComplexity() {
+    return new Complexity<AccelerationData>(createDistance());
+  }
+
+  private static MaxMinQuotient<TimeSeries<AccelerationData>> createComplexFactor() {
+    return new MaxMinQuotient<TimeSeries<AccelerationData>>(createComplexity());
+  }
+
+  private static MaxMinQuotient<TimeSeries<AccelerationData>> createAverageComplexFactor() {
+    return new MaxMinQuotient<TimeSeries<AccelerationData>>(
+        new AverageComplexity<AccelerationData>(createComplexity())
+    );
+  }
+
+  private static MultiplyDistance<TimeSeries<AccelerationData>> createComplexDtw() {
+    return new MultiplyDistance<TimeSeries<AccelerationData>>(createDtw(), createComplexFactor());
+  }
+
+  private static MultiplyDistance<TimeSeries<AccelerationData>> createAverageComplexDtw() {
+    return new MultiplyDistance<TimeSeries<AccelerationData>>(
+        createDtw(),
+        createAverageComplexFactor()
+    );
+  }
+
+  private static GestureDistanceInfo createDtwGestureInfo() {
+    return new GestureDistanceInfo(
+        "DTW",
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createDtw())
+    );
+  }
+
+  private static GestureDistanceInfo createComplexDtwGestureInfo() {
+    return new GestureDistanceInfo(
+        "complexDTW",
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createComplexDtw())
+    );
+  }
+
+  private static GestureDistanceInfo createAverageComplexDtwGestureInfo() {
+    return new GestureDistanceInfo(
+        "averageComplexDTW",
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createAverageComplexDtw())
+    );
+  }
+
+  private static Evaluator[] createEvaluators() {
+    Evaluator[] evaluators = new Evaluator[3];
+    evaluators[0] = createDtwGestureInfo();
+    evaluators[1] = createComplexDtwGestureInfo();
+    evaluators[2] = createAverageComplexDtwGestureInfo();
+    return evaluators;
   }
 
   private static TimeSeriesTransformer<AccelerationData> createTransformer() {
