@@ -11,6 +11,7 @@ import swf.accel.model.AccelerationData;
 import swf.accel.transformer.QuantizeTransformer;
 import swf.app.Evaluator;
 import swf.app.evaluator.GestureDistanceInfo;
+import swf.app.evaluator.SlidingWindowFilter;
 import swf.calculator.distance.DynamicTimeWarping;
 import swf.calculator.distance.MaxMinQuotient;
 import swf.calculator.distance.MultiplyDistance;
@@ -105,11 +106,21 @@ public class App {
     );
   }
 
+  private static SlidingWindowFilter createSlidingWindowFilter() {
+    return new SlidingWindowFilter(
+        createComplexity(),
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createDtw()),
+        0.1,
+        1.2
+    );
+  }
+
   private static Evaluator[] createEvaluators() {
-    Evaluator[] evaluators = new Evaluator[3];
+    Evaluator[] evaluators = new Evaluator[4];
     evaluators[0] = createDtwGestureInfo();
     evaluators[1] = createComplexDtwGestureInfo();
     evaluators[2] = createAverageComplexDtwGestureInfo();
+    evaluators[3] = createSlidingWindowFilter();
     return evaluators;
   }
 
