@@ -34,7 +34,7 @@ public class App {
     try {
       LinkedList<TimeSeries<AccelerationData>> list =
           new LinkedList<TimeSeries<AccelerationData>>();
-      for (int i = 1; i < 8; i++) {
+      for (int i = 1; i < 9; i++) {
         list.add(
             chainTransformer.transform(
                 timeSeriesParser.parseTimeSeriesFromFile("build/resources/main/record" + i + ".txt")
