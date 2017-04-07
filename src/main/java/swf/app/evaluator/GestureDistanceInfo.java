@@ -7,7 +7,7 @@ import swf.accel.model.AccelerationData;
 import swf.app.Evaluator;
 import swf.model.TimeSeries;
 import swf.nnc.NearestNeighbourClassificator;
-import swf.transformer.SubTransformer;
+import swf.transformer.SubFlagTransformer;
 
 public class GestureDistanceInfo implements Evaluator {
   private String title;
@@ -64,10 +64,12 @@ public class GestureDistanceInfo implements Evaluator {
     LinkedList<TimeSeries<AccelerationData>> gestures =
         new LinkedList<TimeSeries<AccelerationData>>();
     for (int i = 1; i < 9; i++) {
-      SubTransformer<AccelerationData> subTransformer =
-          new SubTransformer<AccelerationData>("START " + i, "END " + i);
+      SubFlagTransformer<AccelerationData> subTransformer =
+          new SubFlagTransformer<AccelerationData>("START " + i, "END " + i);
       library.add(subTransformer.transform(timeSeries));
-      subTransformer = new SubTransformer<AccelerationData>("START " + (i + 8), "END " + (i + 8));
+      subTransformer = new SubFlagTransformer<AccelerationData>(
+          "START " + (i + 8), "END " + (i + 8)
+      );
       gestures.add(subTransformer.transform(timeSeries));
     }
     int[] result = new int[8];

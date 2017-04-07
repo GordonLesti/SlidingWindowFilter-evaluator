@@ -21,7 +21,7 @@ import swf.model.TimeSeries;
 import swf.nnc.FullSearch;
 import swf.transformer.ChainTransformer;
 import swf.transformer.MeanTransformer;
-import swf.transformer.SubTransformer;
+import swf.transformer.SubFlagTransformer;
 import swf.transformer.TimeSeriesTransformer;
 
 public class App {
@@ -128,8 +128,8 @@ public class App {
     QuantizeTransformer quantizeTransformer = new QuantizeTransformer();
     MeanTransformer<AccelerationData> meanTransformer =
         new MeanTransformer<AccelerationData>(50, 30, new Mean());
-    SubTransformer<AccelerationData> subTrans =
-        new SubTransformer<AccelerationData>("END 0", "START 17");
+    SubFlagTransformer<AccelerationData> subTrans =
+        new SubFlagTransformer<AccelerationData>("END 0", "START 17");
     LinkedList<TimeSeriesTransformer<AccelerationData>> transformerList =
         new LinkedList<TimeSeriesTransformer<AccelerationData>>();
     transformerList.add(subTrans);

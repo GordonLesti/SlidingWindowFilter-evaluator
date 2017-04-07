@@ -8,9 +8,9 @@ import swf.accel.io.TimeSeriesParser;
 import swf.accel.model.AccelerationData;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
-import swf.transformer.SubTransformer;
+import swf.transformer.SubFlagTransformer;
 
-public class SubTransformerTest {
+public class SubFlagTransformerTest {
   @Test
   public void testTransform() throws FileNotFoundException, IOException {
     LinkedList<Item<AccelerationData>> assertedAccelList = new LinkedList<Item<AccelerationData>>();
@@ -23,8 +23,8 @@ public class SubTransformerTest {
     TimeSeriesParser timeSeriesParser = new TimeSeriesParser();
     TimeSeries<AccelerationData> timeSeries =
         timeSeriesParser.parseTimeSeriesFromFile("build/resources/test/record1.txt");
-    SubTransformer<AccelerationData> subTransformer =
-        new SubTransformer<AccelerationData>("END 2", "START 3");
+    SubFlagTransformer<AccelerationData> subTransformer =
+        new SubFlagTransformer<AccelerationData>("END 2", "START 3");
     assertEquals(
         new TimeSeries<AccelerationData>(assertedAccelList, assertedFlagsList),
         subTransformer.transform(timeSeries)
@@ -37,8 +37,8 @@ public class SubTransformerTest {
     flags.add(new Item<String>(36, "rLjCso9rJ1getwrF"));
     flags.add(new Item<String>(53, "Rg45yJC5rBNNowEc"));
     flags.add(new Item<String>(79, "rLjCso9rJ1getwrF"));
-    SubTransformer<String> subTransformer =
-        new SubTransformer<String>("rLjCso9rJ1getwrF", "Rg45yJC5rBNNowEc");
+    SubFlagTransformer<String> subTransformer =
+        new SubFlagTransformer<String>("rLjCso9rJ1getwrF", "Rg45yJC5rBNNowEc");
     TimeSeries<String> timeSeries = new TimeSeries<String>(
         new LinkedList<Item<String>>(),
         flags
@@ -52,8 +52,8 @@ public class SubTransformerTest {
     flags.add(new Item<String>(36, "wiY0VbOydacAnKWu"));
     flags.add(new Item<String>(53, "fHccuBuAepfkDmNe"));
     flags.add(new Item<String>(79, "fHccuBuAepfkDmNe"));
-    SubTransformer<String> subTransformer =
-        new SubTransformer<String>("wiY0VbOydacAnKWu", "fHccuBuAepfkDmNe");
+    SubFlagTransformer<String> subTransformer =
+        new SubFlagTransformer<String>("wiY0VbOydacAnKWu", "fHccuBuAepfkDmNe");
     TimeSeries<String> timeSeries = new TimeSeries<String>(
         new LinkedList<Item<String>>(),
         flags
@@ -66,8 +66,8 @@ public class SubTransformerTest {
     LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
     flags.add(new Item<String>(36, "wiY0VbOydacAnKWu"));
     flags.add(new Item<String>(53, "fHccuBuAepfkDmNe"));
-    SubTransformer<String> subTransformer =
-        new SubTransformer<String>("wiY0VbOydacAnKWu", "7fEoXOCeI8qOiLix");
+    SubFlagTransformer<String> subTransformer =
+        new SubFlagTransformer<String>("wiY0VbOydacAnKWu", "7fEoXOCeI8qOiLix");
     TimeSeries<String> timeSeries = new TimeSeries<String>(
         new LinkedList<Item<String>>(),
         flags
@@ -80,8 +80,8 @@ public class SubTransformerTest {
     LinkedList<Item<String>> flags = new LinkedList<Item<String>>();
     flags.add(new Item<String>(36, "wiY0VbOydacAnKWu"));
     flags.add(new Item<String>(53, "fHccuBuAepfkDmNe"));
-    SubTransformer<String> subTransformer =
-        new SubTransformer<String>("fHccuBuAepfkDmNe", "wiY0VbOydacAnKWu");
+    SubFlagTransformer<String> subTransformer =
+        new SubFlagTransformer<String>("fHccuBuAepfkDmNe", "wiY0VbOydacAnKWu");
     TimeSeries<String> timeSeries = new TimeSeries<String>(
         new LinkedList<Item<String>>(),
         flags

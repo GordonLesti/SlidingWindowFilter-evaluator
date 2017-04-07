@@ -6,11 +6,11 @@ import java.util.List;
 import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 
-public class SubTransformer<T> implements TimeSeriesTransformer<T> {
+public class SubFlagTransformer<T> implements TimeSeriesTransformer<T> {
   private String fromFlag;
   private String toFlag;
 
-  public SubTransformer(String fromFlag, String toFlag) {
+  public SubFlagTransformer(String fromFlag, String toFlag) {
     this.fromFlag = fromFlag;
     this.toFlag = toFlag;
   }

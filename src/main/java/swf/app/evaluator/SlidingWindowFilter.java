@@ -13,7 +13,7 @@ import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 import swf.nnc.NearestNeighbourClassificator;
 import swf.nnc.Result;
-import swf.transformer.SubTransformer;
+import swf.transformer.SubFlagTransformer;
 import swf.transformer.SubWindowTransformer;
 
 public class SlidingWindowFilter implements Evaluator {
@@ -56,15 +56,17 @@ public class SlidingWindowFilter implements Evaluator {
         new LinkedList<TimeSeries<AccelerationData>>();
     LinkedList<TimeSeries<AccelerationData>> gestures =
         new LinkedList<TimeSeries<AccelerationData>>();
-    SubTransformer<AccelerationData> subTransformer;
+    SubFlagTransformer<AccelerationData> subTransformer;
     String output = "";
     for (int i = 1; i < 9; i++) {
-      subTransformer = new SubTransformer<AccelerationData>("START " + i, "END " + i);
+      subTransformer = new SubFlagTransformer<AccelerationData>("START " + i, "END " + i);
       library.add(subTransformer.transform(timeSeries));
-      subTransformer = new SubTransformer<AccelerationData>("START " + (i + 8), "END " + (i + 8));
+      subTransformer = new SubFlagTransformer<AccelerationData>(
+          "START " + (i + 8), "END " + (i + 8)
+      );
       gestures.add(subTransformer.transform(timeSeries));
     }
-    subTransformer = new SubTransformer<AccelerationData>("END 8", "START 17");
+    subTransformer = new SubFlagTransformer<AccelerationData>("END 8", "START 17");
     TimeSeries<AccelerationData> fullStreamTimeSeries = subTransformer.transform(timeSeries);
     output += this.gestureFlagsString(fullStreamTimeSeries);
     int windowSize = this.getAverageLength(library);

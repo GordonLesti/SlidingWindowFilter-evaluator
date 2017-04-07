@@ -12,7 +12,7 @@ import swf.model.TimeSeries;
 import swf.model.timeseries.Item;
 import swf.transformer.ChainTransformer;
 import swf.transformer.MeanTransformer;
-import swf.transformer.SubTransformer;
+import swf.transformer.SubFlagTransformer;
 import swf.transformer.TimeSeriesTransformer;
 
 public class ChainTransformerTest {
@@ -20,7 +20,7 @@ public class ChainTransformerTest {
   public void testTransform() throws FileNotFoundException, IOException {
     LinkedList<TimeSeriesTransformer<AccelerationData>> transformerList =
         new LinkedList<TimeSeriesTransformer<AccelerationData>>();
-    transformerList.add(new SubTransformer<AccelerationData>("START 3", "END 3"));
+    transformerList.add(new SubFlagTransformer<AccelerationData>("START 3", "END 3"));
     transformerList.add(new MeanTransformer<AccelerationData>(50, 30, new Mean()));
     transformerList.add(new QuantizeTransformer());
     LinkedList<Item<AccelerationData>> accelList = new LinkedList<Item<AccelerationData>>();
