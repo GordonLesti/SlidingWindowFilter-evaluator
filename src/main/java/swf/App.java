@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import swf.accel.calculator.Distance;
 import swf.accel.calculator.Mean;
+import swf.accel.calculator.Subtraction;
 import swf.accel.io.TimeSeriesParser;
 import swf.accel.model.AccelerationData;
 import swf.accel.transformer.QuantizeTransformer;
@@ -15,12 +16,14 @@ import swf.app.evaluator.SlidingWindowFilter;
 import swf.calculator.distance.DynamicTimeWarping;
 import swf.calculator.distance.MaxMinQuotient;
 import swf.calculator.distance.MultiplyDistance;
+import swf.calculator.distance.NormalizeDynamicTimeWarping;
 import swf.calculator.measure.AverageComplexity;
 import swf.calculator.measure.Complexity;
 import swf.model.TimeSeries;
 import swf.nnc.FullSearch;
 import swf.transformer.ChainTransformer;
 import swf.transformer.MeanTransformer;
+import swf.transformer.NormalizeTransformer;
 import swf.transformer.SubFlagTransformer;
 import swf.transformer.TimeSeriesTransformer;
 
@@ -60,6 +63,16 @@ public class App {
     return new DynamicTimeWarping<AccelerationData>(createDistance());
   }
 
+  private static NormalizeDynamicTimeWarping<AccelerationData> createNormalizeDtw() {
+    return new NormalizeDynamicTimeWarping<AccelerationData>(
+        createDtw(),
+        new NormalizeTransformer<AccelerationData>(
+            new Subtraction(),
+            new Mean()
+        )
+    );
+  }
+
   private static Complexity<AccelerationData> createComplexity() {
     return new Complexity<AccelerationData>(createDistance());
   }
@@ -92,6 +105,13 @@ public class App {
     );
   }
 
+  private static GestureDistanceInfo createNormalizeDtwGestureInfo() {
+    return new GestureDistanceInfo(
+        "NormalizeDTW",
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createNormalizeDtw())
+    );
+  }
+
   private static GestureDistanceInfo createComplexDtwGestureInfo() {
     return new GestureDistanceInfo(
         "complexDTW",
@@ -109,18 +129,19 @@ public class App {
   private static SlidingWindowFilter createSlidingWindowFilter() {
     return new SlidingWindowFilter(
         createComplexity(),
-        new FullSearch<TimeSeries<AccelerationData>, Double>(createDtw()),
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createNormalizeDtw()),
         0.1,
         1.2
     );
   }
 
   private static Evaluator[] createEvaluators() {
-    Evaluator[] evaluators = new Evaluator[4];
+    Evaluator[] evaluators = new Evaluator[5];
     evaluators[0] = createDtwGestureInfo();
-    evaluators[1] = createComplexDtwGestureInfo();
-    evaluators[2] = createAverageComplexDtwGestureInfo();
-    evaluators[3] = createSlidingWindowFilter();
+    evaluators[1] = createNormalizeDtwGestureInfo();
+    evaluators[2] = createComplexDtwGestureInfo();
+    evaluators[3] = createAverageComplexDtwGestureInfo();
+    evaluators[4] = createSlidingWindowFilter();
     return evaluators;
   }
 
