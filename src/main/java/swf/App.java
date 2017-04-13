@@ -77,14 +77,16 @@ public class App {
     return new Complexity<AccelerationData>(createDistance());
   }
 
+  private static AverageComplexity<AccelerationData> createAverageComplexity() {
+    return new AverageComplexity<AccelerationData>(createComplexity());
+  }
+
   private static MaxMinQuotient<TimeSeries<AccelerationData>> createComplexFactor() {
     return new MaxMinQuotient<TimeSeries<AccelerationData>>(createComplexity());
   }
 
   private static MaxMinQuotient<TimeSeries<AccelerationData>> createAverageComplexFactor() {
-    return new MaxMinQuotient<TimeSeries<AccelerationData>>(
-        new AverageComplexity<AccelerationData>(createComplexity())
-    );
+    return new MaxMinQuotient<TimeSeries<AccelerationData>>(createAverageComplexity());
   }
 
   private static MultiplyDistance<TimeSeries<AccelerationData>> createComplexDtw() {
@@ -96,6 +98,10 @@ public class App {
         createDtw(),
         createAverageComplexFactor()
     );
+  }
+
+  private static MultiplyDistance<TimeSeries<AccelerationData>> createNormalizeComplexDtw() {
+    return new MultiplyDistance<TimeSeries<AccelerationData>>(createNormalizeDtw(), createComplexFactor());
   }
 
   private static GestureDistanceInfo createDtwGestureInfo() {
@@ -126,6 +132,13 @@ public class App {
     );
   }
 
+  private static GestureDistanceInfo createNormalizeComplexDtwGestureInfo() {
+    return new GestureDistanceInfo(
+        "normalizeComplexDtw",
+        new FullSearch<TimeSeries<AccelerationData>, Double>(createNormalizeComplexDtw())
+    );
+  }
+
   private static SlidingWindowFilter createSlidingWindowFilter() {
     return new SlidingWindowFilter(
         createComplexity(),
@@ -136,12 +149,13 @@ public class App {
   }
 
   private static Evaluator[] createEvaluators() {
-    Evaluator[] evaluators = new Evaluator[5];
+    Evaluator[] evaluators = new Evaluator[6];
     evaluators[0] = createDtwGestureInfo();
     evaluators[1] = createNormalizeDtwGestureInfo();
     evaluators[2] = createComplexDtwGestureInfo();
     evaluators[3] = createAverageComplexDtwGestureInfo();
-    evaluators[4] = createSlidingWindowFilter();
+    evaluators[4] = createNormalizeComplexDtwGestureInfo();
+    evaluators[5] = createSlidingWindowFilter();
     return evaluators;
   }
 
