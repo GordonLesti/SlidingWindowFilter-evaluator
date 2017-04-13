@@ -1,16 +1,16 @@
-package swf.accel.model;
+package swf;
 
 import java.util.Objects;
 
-public class AccelerationData {
+public class Accel {
   private int axisX;
   private int axisY;
   private int axisZ;
 
   /**
-   * Creates a new AccelerationData object.
+   * Creates Accel object.
    */
-  public AccelerationData(int axisX, int axisY, int axisZ) {
+  public Accel(int axisX, int axisY, int axisZ) {
     this.axisX = axisX;
     this.axisY = axisY;
     this.axisZ = axisZ;
@@ -29,11 +29,11 @@ public class AccelerationData {
   }
 
   /**
-   * Checks if the given object equals the AccelerationData.
+   * Checks if the given Object equals the Accel object.
    */
   public boolean equals(Object object) {
-    if (object instanceof AccelerationData) {
-      AccelerationData accel = (AccelerationData) object;
+    if (object instanceof Accel) {
+      Accel accel = (Accel) object;
       return this.getX() == accel.getX()
           && this.getY() == accel.getY()
           && this.getZ() == accel.getZ();
@@ -46,6 +46,6 @@ public class AccelerationData {
   }
 
   public String toString() {
-    return "[" + this.getX() + ", " + this.getY() + ", " + this.getZ() + "]";
+    return "(" + this.getX() + "," + this.getY() + "," + this.getZ() + ")";
   }
 }
