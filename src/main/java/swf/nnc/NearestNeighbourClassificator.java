@@ -19,8 +19,4 @@ public abstract class NearestNeighbourClassificator<T> {
   protected abstract void preProcess();
 
   public abstract T nearestNeighbour(T query);
-
-  public Distance<T> getDistance() {
-    return this.distance;
-  }
 }

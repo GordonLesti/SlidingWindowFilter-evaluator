@@ -25,17 +25,4 @@ public class FullSearchTest {
         new FullSearch<Integer>(dist, testData).nearestNeighbour(17)
     );
   }
-
-  @Test
-  public void testGetDistance() {
-    Distance<String> distance = new Distance<String>() {
-      public double distance(String str1, String str2) {
-        return 0;
-      }
-    };
-    assertEquals(
-        distance,
-        new FullSearch<String>(distance, new LinkedList<String>()).getDistance()
-    );
-  }
 }
