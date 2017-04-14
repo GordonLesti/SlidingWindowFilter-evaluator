@@ -115,6 +115,6 @@ public class TimeSeriesParser implements swf.io.TimeSeriesParser<Accel> {
     if (axis >= -200) {
       return (axis + 100) / 20 - 11;
     }
-    return 16;
+    return -16;
   }
 }
