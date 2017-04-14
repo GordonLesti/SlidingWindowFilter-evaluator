@@ -5,10 +5,13 @@ import java.util.List;
 import swf.TimeSeries;
 import swf.accel.io.TimeSeriesParser;
 import swf.accel.measure.Distance;
+import swf.accel.operator.Add;
+import swf.accel.operator.ScalarMult;
 import swf.measure.MultiplyDistance;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
 import swf.measure.timeseries.MaxMinQuotient;
+import swf.measure.timeseries.NormalizeDistance;
 import swf.nnc.factory.FullSearch;
 
 public class App {
@@ -40,6 +43,18 @@ public class App {
             new DynamicTimeWarping<Accel>(new Distance()),
             new FullSearch<TimeSeries<Accel>>(),
             "DynamicTimeWarping"
+        )
+    );
+    evaList.add(
+        new swf.evaluation.Distance(
+            tsList,
+            new NormalizeDistance<Accel>(
+                new DynamicTimeWarping<Accel>(new Distance()),
+                new Add(),
+                new ScalarMult()
+            ),
+            new FullSearch<TimeSeries<Accel>>(),
+            "Normalized DynamicTimeWarping"
         )
     );
     evaList.add(
