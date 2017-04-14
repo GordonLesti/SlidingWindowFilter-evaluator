@@ -5,6 +5,7 @@ import java.util.List;
 import swf.TimeSeries;
 import swf.accel.io.TimeSeriesParser;
 import swf.accel.measure.Distance;
+import swf.measure.MultiplyDistance;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
 import swf.measure.timeseries.MaxMinQuotient;
@@ -47,6 +48,17 @@ public class App {
             new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
             new FullSearch<TimeSeries<Accel>>(),
             "Complexity"
+        )
+    );
+    evaList.add(
+        new swf.evaluation.Distance(
+            tsList,
+            new MultiplyDistance<TimeSeries<Accel>>(
+                new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
+                new DynamicTimeWarping<Accel>(new Distance())
+            ),
+            new FullSearch<TimeSeries<Accel>>(),
+            "Complexity DynamicTimeWarping"
         )
     );
     return evaList;
