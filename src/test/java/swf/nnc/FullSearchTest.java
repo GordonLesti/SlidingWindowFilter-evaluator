@@ -26,6 +26,7 @@ public class FullSearchTest {
     );
   }
 
+  @Test
   public void testGetDistance() {
     Distance<String> distance = new Distance<String>() {
       public double distance(String str1, String str2) {

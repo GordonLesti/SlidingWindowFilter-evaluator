@@ -21,6 +21,6 @@ public abstract class NearestNeighbourClassificator<T> {
   public abstract T nearestNeighbour(T query);
 
   public Distance<T> getDistance() {
-    return this.getDistance();
+    return this.distance;
   }
 }
