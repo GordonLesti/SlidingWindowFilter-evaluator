@@ -7,7 +7,7 @@ import swf.evaluation.slidingwindow.WindowSize;
 
 public class Average implements WindowSize {
   /**
-   * Returns the minimum size of all TimeSeries.
+   * Returns the average size of all TimeSeries.
    */
   public int windowSize(Collection<TimeSeries<Accel>> tsCollection) {
     int sum = 0;

@@ -14,6 +14,7 @@ import swf.evaluation.slidingwindow.WindowSize;
 import swf.evaluation.slidingwindow.threshold.MinDistance;
 import swf.evaluation.slidingwindow.windowsize.Average;
 import swf.evaluation.slidingwindow.windowsize.Max;
+import swf.evaluation.slidingwindow.windowsize.Middle;
 import swf.evaluation.slidingwindow.windowsize.Min;
 import swf.filter.Factory;
 import swf.filter.factory.Estimate;
@@ -122,6 +123,7 @@ public class App {
     hashMap.put("Max", new Max());
     hashMap.put("Min", new Min());
     hashMap.put("Average", new Average());
+    hashMap.put("Middle", new Middle());
     return hashMap;
   }
 
