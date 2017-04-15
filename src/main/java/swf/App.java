@@ -10,7 +10,9 @@ import swf.accel.measure.Distance;
 import swf.accel.operator.Add;
 import swf.accel.operator.ScalarMult;
 import swf.evaluation.SlidingWindow;
+import swf.evaluation.slidingwindow.Threshold;
 import swf.evaluation.slidingwindow.WindowSize;
+import swf.evaluation.slidingwindow.threshold.AverageDistance;
 import swf.evaluation.slidingwindow.threshold.MinDistance;
 import swf.evaluation.slidingwindow.windowsize.Average;
 import swf.evaluation.slidingwindow.windowsize.Max;
@@ -65,20 +67,23 @@ public class App {
     HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> distHashMap = getDistances();
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
     HashMap<String, Factory<TimeSeries<Accel>>> filterHashMap = getFilters();
+    HashMap<String, Threshold> thresholdHashMap = getThresholds();
     for (String distName : distHashMap.keySet()) {
       for (String wsName : windowSizeHashMap.keySet()) {
         for (String filterName : filterHashMap.keySet()) {
-          evaList.add(
-              new SlidingWindow(
-                  tsList,
-                  distHashMap.get(distName),
-                  new FullSearch<TimeSeries<Accel>>(),
-                  filterHashMap.get(filterName),
-                  windowSizeHashMap.get(wsName),
-                  new MinDistance(),
-                  distName + " " + wsName + " " + filterName
-              )
-          );
+          for (String thresholdName : thresholdHashMap.keySet()) {
+            evaList.add(
+                new SlidingWindow(
+                    tsList,
+                    distHashMap.get(distName),
+                    new FullSearch<TimeSeries<Accel>>(),
+                    filterHashMap.get(filterName),
+                    windowSizeHashMap.get(wsName),
+                    thresholdHashMap.get(thresholdName),
+                    distName + " " + wsName + " " + filterName + " " + thresholdName
+                )
+            );
+          }
         }
       }
     }
@@ -101,6 +106,13 @@ public class App {
       );
     }
     return evaList;
+  }
+
+  private static HashMap<String, Threshold> getThresholds() {
+    HashMap<String, Threshold> hashMap = new HashMap<String, Threshold>();
+    hashMap.put("MinDistance", new MinDistance());
+    // hashMap.put("AverageDistance", new AverageDistance());
+    return hashMap;
   }
 
   private static HashMap<String, Factory<TimeSeries<Accel>>> getFilters() {
