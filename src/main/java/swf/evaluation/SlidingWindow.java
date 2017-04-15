@@ -9,6 +9,8 @@ import swf.evaluation.slidingwindow.Threshold;
 import swf.evaluation.slidingwindow.WindowSize;
 import swf.measure.Distance;
 import swf.nnc.Factory;
+import swf.nnc.NearestNeighbourClassificator;
+import swf.timeseries.Point;
 
 public class SlidingWindow implements Comparable<SlidingWindow> {
   private List<TimeSeries<Accel>> tsList;
@@ -18,6 +20,8 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
   private Threshold threshold;
   private String name;
   private List<TimeSeries<Accel>> resultTsList;
+  private int successCount;
+  private int failCount;
 
   /**
    * Creates an evaluator for sliding window filters on TimeSeries of Accel data.
@@ -36,10 +40,23 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     this.windowSize = windowSize;
     this.threshold = threshold;
     this.name = name;
+    this.successCount = 0;
+    this.failCount = 0;
+    for (TimeSeries<Accel> ts : tsList) {
+      this.slideOverTimeSeries(ts);
+    }
   }
 
   public String getName() {
     return this.name;
+  }
+
+  public int getSuccessCount() {
+    return this.successCount;
+  }
+
+  public int getFailCount() {
+    return this.failCount;
   }
 
   public int compareTo(SlidingWindow swf) {
@@ -53,8 +70,51 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     }
     int fromIndex = ts.lastIndexOf(ts.intervalByTag(Integer.toString(8)).getLast()) + 1;
     int toIndex = ts.size();
-    TimeSeries<Accel> record = ts.subTimeSeries(fromIndex, toIndex);
+    TimeSeries<Accel> taggedRecord = ts.subTimeSeries(fromIndex, toIndex);
+    TimeSeries<Accel> record = new TimeSeries<Accel>();
+    for (Point<Accel> point : taggedRecord) {
+      record.add(new Point<Accel>(point.getData()));
+    }
     int windowSize = this.windowSize.windowSize(testData);
     int stepSize = (int) (windowSize / 10.0);
+    int time = 0;
+    NearestNeighbourClassificator<TimeSeries<Accel>> nnc =
+        this.nncFactory.create(this.distance, testData);
+    double threshold = this.threshold.threshold(testData, this.distance);
+    while (time + windowSize <= record.size()) {
+      TimeSeries<Accel> window = record.subTimeSeries(time, time + windowSize);
+      TimeSeries<Accel> nn = nnc.nearestNeighbour(window);
+      double dist = this.distance.distance(window, nn);
+      if (dist < threshold) {
+        for (int i = time; i < time + windowSize; i++) {
+          record.set(
+              i,
+              new Point<Accel>(
+                  record.get(i).getData(),
+                  Integer.toString(testData.indexOf(nn) + 9)
+              )
+          );
+        }
+        time += windowSize;
+      } else {
+        time += stepSize;
+      }
+    }
+    this.setSuccessAndFailCount(taggedRecord, record);
+  }
+
+  private void setSuccessAndFailCount(
+      TimeSeries<Accel> taggedRecord,
+      TimeSeries<Accel> record
+  ) {
+    for (int i = 0; i < taggedRecord.size(); i++) {
+      String expectedTag = taggedRecord.get(i).getTag();
+      String tag = record.get(i).getTag();
+      if (!expectedTag.equals(tag)) {
+        this.failCount++;
+      } else if (!expectedTag.equals("")) {
+        this.successCount++;
+      }
+    }
   }
 }
