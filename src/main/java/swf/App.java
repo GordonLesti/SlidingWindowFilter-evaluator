@@ -22,6 +22,7 @@ import swf.filter.Factory;
 import swf.filter.factory.Estimate;
 import swf.filter.factory.TrueFilter;
 import swf.measure.MultiplyDistance;
+import swf.measure.timeseries.AverageEstimate;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
 import swf.measure.timeseries.MaxMinQuotient;
@@ -122,9 +123,17 @@ public class App {
     double[] filterBlurFactors = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
+      Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
       hashMap.put(
           "ComplexityFilter(" + factor + ")",
-          new Estimate<TimeSeries<Accel>>(new Complexity<Accel>(new Distance()), factor)
+          new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
+      );
+      hashMap.put(
+          "AverageComplexityFilter(" + factor + ")",
+          new Estimate<TimeSeries<Accel>>(
+              new AverageEstimate<Accel>(complexityEstimate),
+              factor
+          )
       );
     }
     return hashMap;
@@ -133,8 +142,8 @@ public class App {
   private static HashMap<String, WindowSize> getWindowSizes() {
     HashMap<String, WindowSize> hashMap = new HashMap<String, WindowSize>();
     hashMap.put("Max", new Max());
-    hashMap.put("Min", new Min());
-    hashMap.put("Average", new Average());
+    // hashMap.put("Min", new Min());
+    // hashMap.put("Average", new Average());
     hashMap.put("Middle", new Middle());
     return hashMap;
   }
@@ -146,14 +155,14 @@ public class App {
         "DynamicTimeWarping",
         new DynamicTimeWarping<Accel>(new Distance())
     );
-    hashMap.put(
-        "Normalized DynamicTimeWarping",
-        new NormalizeDistance<Accel>(
-            new DynamicTimeWarping<Accel>(new Distance()),
-            new Add(),
-            new ScalarMult()
-        )
-    );
+    // hashMap.put(
+    //     "Normalized DynamicTimeWarping",
+    //     new NormalizeDistance<Accel>(
+    //         new DynamicTimeWarping<Accel>(new Distance()),
+    //         new Add(),
+    //         new ScalarMult()
+    //     )
+    // );
     // hashMap.put(
     //     "Complexity",
     //     new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance()))
