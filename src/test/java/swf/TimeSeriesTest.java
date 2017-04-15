@@ -18,4 +18,20 @@ public class TimeSeriesTest {
     ts2.add(new Point<Integer>(30, "dlIFf4ga"));
     assertEquals(ts2, ts1.intervalByTag("dlIFf4ga"));
   }
+
+  @Test
+  public void testSubTimeSeries() {
+    TimeSeries<Integer> ts1 = new TimeSeries<Integer>();
+    ts1.add(new Point<Integer>(46, "g6aCC8je"));
+    ts1.add(new Point<Integer>(-44, "6XnT0bb3"));
+    ts1.add(new Point<Integer>(24, "zWeXXcbY"));
+    ts1.add(new Point<Integer>(-1, "DrSJvEl4"));
+    ts1.add(new Point<Integer>(-68, "kfzBqIWP"));
+    ts1.add(new Point<Integer>(-36, "0rqpdwsg"));
+    TimeSeries<Integer> ts2 = new TimeSeries<Integer>();
+    ts2.add(new Point<Integer>(-44, "6XnT0bb3"));
+    ts2.add(new Point<Integer>(24, "zWeXXcbY"));
+    ts2.add(new Point<Integer>(-1, "DrSJvEl4"));
+    assertEquals(ts2, ts1.subTimeSeries(1, 4));
+  }
 }
