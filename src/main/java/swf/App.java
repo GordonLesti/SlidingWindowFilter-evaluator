@@ -1,5 +1,6 @@
 package swf;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,9 @@ import swf.evaluation.slidingwindow.threshold.MinDistance;
 import swf.evaluation.slidingwindow.windowsize.Average;
 import swf.evaluation.slidingwindow.windowsize.Max;
 import swf.evaluation.slidingwindow.windowsize.Min;
+import swf.filter.Factory;
+import swf.filter.factory.Estimate;
+import swf.filter.factory.TrueFilter;
 import swf.measure.MultiplyDistance;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
@@ -27,13 +31,20 @@ public class App {
    */
   public static void main(String[] args) {
     List<TimeSeries<Accel>> records = getRecords();
-    System.out.println("Distance");
-    for (swf.evaluation.Distance distEva : getDistanceEvaluator(records)) {
+    System.out.println("Distance:\n");
+    List<swf.evaluation.Distance> distEvaList = getDistanceEvaluator(records);
+    Collections.sort(distEvaList);
+    for (swf.evaluation.Distance distEva : distEvaList) {
       System.out.println(distEva.getName() + " " + distEva.getSuccessQuotient());
     }
-    System.out.println("SlidingWindow");
-    for (SlidingWindow swEva : getSlidingWindowEvaluator(records)) {
-      System.out.println(swEva.getName() + " " + swEva.getSuccessQuotient());
+    System.out.println("\nSlidingWindow:\n");
+    List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
+    Collections.sort(swEvaList);
+    for (SlidingWindow swEva : swEvaList) {
+      System.out.println(
+          swEva.getName() + " " + swEva.getSuccessQuotient() + " "
+              + swEva.getSuccessCount() + " " + swEva.getFailCount()
+      );
     }
   }
 
@@ -52,18 +63,22 @@ public class App {
     LinkedList<SlidingWindow> evaList = new LinkedList<SlidingWindow>();
     HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> distHashMap = getDistances();
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
+    HashMap<String, Factory<TimeSeries<Accel>>> filterHashMap = getFilters();
     for (String distName : distHashMap.keySet()) {
       for (String wsName : windowSizeHashMap.keySet()) {
-        evaList.add(
-            new SlidingWindow(
-                tsList,
-                distHashMap.get(distName),
-                new FullSearch<TimeSeries<Accel>>(),
-                windowSizeHashMap.get(wsName),
-                new MinDistance(),
-                distName + " " + wsName
-            )
+        for (String filterName : filterHashMap.keySet()) {
+          evaList.add(
+              new SlidingWindow(
+                  tsList,
+                  distHashMap.get(distName),
+                  new FullSearch<TimeSeries<Accel>>(),
+                  filterHashMap.get(filterName),
+                  windowSizeHashMap.get(wsName),
+                  new MinDistance(),
+                  distName + " " + wsName + " " + filterName
+              )
           );
+        }
       }
     }
     return evaList;
@@ -85,6 +100,21 @@ public class App {
       );
     }
     return evaList;
+  }
+
+  private static HashMap<String, Factory<TimeSeries<Accel>>> getFilters() {
+    HashMap<String, Factory<TimeSeries<Accel>>> hashMap =
+        new HashMap<String, Factory<TimeSeries<Accel>>>();
+    hashMap.put("NoFilter", new TrueFilter<TimeSeries<Accel>>());
+    double[] filterBlurFactors = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
+    for (int i = 0; i < filterBlurFactors.length; i++) {
+      double factor = filterBlurFactors[i];
+      hashMap.put(
+          "ComplexityFilter(" + factor + ")",
+          new Estimate<TimeSeries<Accel>>(new Complexity<Accel>(new Distance()), factor)
+      );
+    }
+    return hashMap;
   }
 
   private static HashMap<String, WindowSize> getWindowSizes() {
@@ -110,17 +140,17 @@ public class App {
             new ScalarMult()
         )
     );
-    hashMap.put(
-        "Complexity",
-        new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance()))
-    );
-    hashMap.put(
-        "Complexity DynamicTimeWarping",
-        new MultiplyDistance<TimeSeries<Accel>>(
-            new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
-            new DynamicTimeWarping<Accel>(new Distance())
-        )
-    );
+    // hashMap.put(
+    //     "Complexity",
+    //     new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance()))
+    // );
+    // hashMap.put(
+    //     "Complexity DynamicTimeWarping",
+    //     new MultiplyDistance<TimeSeries<Accel>>(
+    //         new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
+    //         new DynamicTimeWarping<Accel>(new Distance())
+    //     )
+    // );
     return hashMap;
   }
 }
