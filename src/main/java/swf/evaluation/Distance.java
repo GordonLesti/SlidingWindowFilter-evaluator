@@ -16,7 +16,7 @@ public class Distance implements Comparable<Distance> {
   private double successQuotient;
 
   /**
-   * Creates an evaluator for distance measure fucntions on TimeSeries of type Accel.
+   * Creates an evaluator for distance measure functions on TimeSeries of type Accel.
    */
   public Distance(
       List<TimeSeries<Accel>> tsList,
