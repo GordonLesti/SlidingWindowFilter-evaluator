@@ -1,9 +1,9 @@
-package swf.evaluation.slidingwindowfilter.windowsize;
+package swf.evaluation.slidingwindow.windowsize;
 
 import java.util.Collection;
 import swf.Accel;
 import swf.TimeSeries;
-import swf.evaluation.slidingwindowfilter.WindowSize;
+import swf.evaluation.slidingwindow.WindowSize;
 
 public class Average implements WindowSize {
   /**

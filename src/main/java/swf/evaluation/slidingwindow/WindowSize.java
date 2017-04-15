@@ -1,4 +1,4 @@
-package swf.evaluation.slidingwindowfilter;
+package swf.evaluation.slidingwindow;
 
 import java.util.Collection;
 import swf.Accel;
