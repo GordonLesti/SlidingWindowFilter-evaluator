@@ -59,7 +59,19 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     return this.failCount;
   }
 
+  public double getSuccessQuotient() {
+    return (this.getSuccessCount() * 1.0) / this.getFailCount();
+  }
+
   public int compareTo(SlidingWindow swf) {
+    double quotient = this.getSuccessQuotient();
+    double swfQuotient = swf.getSuccessQuotient();
+    if (quotient > swfQuotient) {
+      return 1;
+    }
+    if (quotient < swfQuotient) {
+      return -1;
+    }
     return 0;
   }
 
