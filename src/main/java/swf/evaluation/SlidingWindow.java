@@ -24,6 +24,7 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
   private List<TimeSeries<Accel>> resultTsList;
   private int successCount;
   private int failCount;
+  private int nncCallCount;
 
   /**
    * Creates an evaluator for sliding window filters on TimeSeries of Accel data.
@@ -46,6 +47,7 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     this.name = name;
     this.successCount = 0;
     this.failCount = 0;
+    this.nncCallCount = 0;
     for (TimeSeries<Accel> ts : tsList) {
       this.slideOverTimeSeries(ts);
     }
@@ -63,6 +65,10 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     return this.failCount;
   }
 
+  public int getNncCallCount() {
+    return this.nncCallCount;
+  }
+
   public double getSuccessQuotient() {
     return (this.getSuccessCount() * 1.0) / this.getFailCount();
   }
@@ -77,6 +83,14 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       return 1;
     }
     if (quotient < swfQuotient) {
+      return -1;
+    }
+    int nncCount = this.getNncCallCount();
+    int swfNnCCount = swf.getNncCallCount();
+    if (nncCount < swfNnCCount) {
+      return 1;
+    }
+    if (nncCount > swfNnCCount) {
       return -1;
     }
     return 0;
@@ -105,6 +119,7 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       TimeSeries<Accel> window = record.subTimeSeries(time, time + windowSize);
       if (filter.filter(window)) {
         TimeSeries<Accel> nn = nnc.nearestNeighbour(window);
+        this.nncCallCount++;
         double dist = this.distance.distance(window, nn);
         if (dist < threshold) {
           for (int i = time; i < time + windowSize; i++) {

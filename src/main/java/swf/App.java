@@ -38,16 +38,19 @@ public class App {
     System.out.println("Distance:\n");
     List<swf.evaluation.Distance> distEvaList = getDistanceEvaluator(records);
     Collections.sort(distEvaList);
+    Collections.reverse(distEvaList);
     for (swf.evaluation.Distance distEva : distEvaList) {
       System.out.println(distEva.getName() + " " + distEva.getSuccessQuotient());
     }
     System.out.println("\nSlidingWindow:\n");
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
     Collections.sort(swEvaList);
+    Collections.reverse(swEvaList);
     for (SlidingWindow swEva : swEvaList) {
       System.out.println(
-          swEva.getName() + " " + swEva.getSuccessQuotient() + " "
-              + swEva.getSuccessCount() + " " + swEva.getFailCount()
+          "\"" + swEva.getName() + "\";" + swEva.getSuccessQuotient() + ";"
+              + swEva.getSuccessCount() + ";" + swEva.getFailCount() + ";"
+              + swEva.getNncCallCount()
       );
     }
   }
@@ -142,8 +145,8 @@ public class App {
   private static HashMap<String, WindowSize> getWindowSizes() {
     HashMap<String, WindowSize> hashMap = new HashMap<String, WindowSize>();
     hashMap.put("Max", new Max());
-    // hashMap.put("Min", new Min());
-    // hashMap.put("Average", new Average());
+    hashMap.put("Min", new Min());
+    hashMap.put("Average", new Average());
     hashMap.put("Middle", new Middle());
     return hashMap;
   }
@@ -155,25 +158,25 @@ public class App {
         "DynamicTimeWarping",
         new DynamicTimeWarping<Accel>(new Distance())
     );
-    // hashMap.put(
-    //     "Normalized DynamicTimeWarping",
-    //     new NormalizeDistance<Accel>(
-    //         new DynamicTimeWarping<Accel>(new Distance()),
-    //         new Add(),
-    //         new ScalarMult()
-    //     )
-    // );
+    hashMap.put(
+        "Normalized DynamicTimeWarping",
+        new NormalizeDistance<Accel>(
+            new DynamicTimeWarping<Accel>(new Distance()),
+            new Add(),
+            new ScalarMult()
+        )
+    );
     // hashMap.put(
     //     "Complexity",
     //     new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance()))
     // );
-    // hashMap.put(
-    //     "Complexity DynamicTimeWarping",
-    //     new MultiplyDistance<TimeSeries<Accel>>(
-    //         new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
-    //         new DynamicTimeWarping<Accel>(new Distance())
-    //     )
-    // );
+    hashMap.put(
+        "Complexity DynamicTimeWarping",
+        new MultiplyDistance<TimeSeries<Accel>>(
+            new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
+            new DynamicTimeWarping<Accel>(new Distance())
+        )
+    );
     return hashMap;
   }
 }
