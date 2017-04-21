@@ -27,6 +27,7 @@ import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
 import swf.measure.timeseries.MaxMinQuotient;
 import swf.measure.timeseries.NormalizeDistance;
+import swf.measure.timeseries.Variance;
 import swf.nnc.factory.FullSearch;
 
 public class App {
@@ -124,9 +125,9 @@ public class App {
         new HashMap<String, Factory<TimeSeries<Accel>>>();
     hashMap.put("NoFilter", new TrueFilter<TimeSeries<Accel>>());
     double[] filterBlurFactors = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
+    Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
-      Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
       hashMap.put(
           "ComplexityFilter(" + factor + ")",
           new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
@@ -135,6 +136,17 @@ public class App {
           "AverageComplexityFilter(" + factor + ")",
           new Estimate<TimeSeries<Accel>>(
               new AverageEstimate<Accel>(complexityEstimate),
+              factor
+          )
+      );
+      hashMap.put(
+          "VarianceFilter(" + factor + ")",
+          new Estimate<TimeSeries<Accel>>(
+              new Variance<Accel>(
+                  new Distance(),
+                  new Add(),
+                  new ScalarMult()
+              ),
               factor
           )
       );
@@ -154,6 +166,7 @@ public class App {
   private static HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> getDistances() {
     HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> hashMap =
         new HashMap<String, swf.measure.Distance<TimeSeries<Accel>>>();
+    Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
     hashMap.put(
         "DynamicTimeWarping",
         new DynamicTimeWarping<Accel>(new Distance())
@@ -166,14 +179,34 @@ public class App {
             new ScalarMult()
         )
     );
-    // hashMap.put(
-    //     "Complexity",
-    //     new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance()))
-    // );
+    hashMap.put(
+        "Complexity",
+        new MaxMinQuotient<Accel>(complexityEstimate)
+    );
     hashMap.put(
         "Complexity DynamicTimeWarping",
         new MultiplyDistance<TimeSeries<Accel>>(
-            new MaxMinQuotient<Accel>(new Complexity<Accel>(new Distance())),
+            new MaxMinQuotient<Accel>(complexityEstimate),
+            new DynamicTimeWarping<Accel>(new Distance())
+        )
+    );
+    hashMap.put(
+        "AverageComplexity DynamicTimeWarping",
+        new MultiplyDistance<TimeSeries<Accel>>(
+            new MaxMinQuotient<Accel>(new AverageEstimate<Accel>(complexityEstimate)),
+            new DynamicTimeWarping<Accel>(new Distance())
+        )
+    );
+    hashMap.put(
+        "Variance DynamicTimeWarping",
+        new MultiplyDistance<TimeSeries<Accel>>(
+            new MaxMinQuotient<Accel>(
+                new Variance<Accel>(
+                    new Distance(),
+                    new Add(),
+                    new ScalarMult()
+                )
+            ),
             new DynamicTimeWarping<Accel>(new Distance())
         )
     );
