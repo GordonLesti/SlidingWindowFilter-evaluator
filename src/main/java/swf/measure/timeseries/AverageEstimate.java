@@ -11,6 +11,6 @@ public class AverageEstimate<T> implements Estimate<TimeSeries<T>> {
   }
 
   public double estimate(TimeSeries<T> ts) {
-    return this.estimate.estimate(ts) / ts.size();
+    return this.estimate.estimate(ts) / (ts.size() - 1);
   }
 }

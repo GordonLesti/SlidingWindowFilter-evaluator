@@ -18,6 +18,6 @@ public class AverageEstimateTest {
         return (ts.size() * ts.size()) / 2.0;
       }
     };
-    assertEquals(45.5, new AverageEstimate<Integer>(estimate).estimate(intTs), 0);
+    assertEquals(8281.0 / 180, new AverageEstimate<Integer>(estimate).estimate(intTs), 0);
   }
 }

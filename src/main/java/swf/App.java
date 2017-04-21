@@ -179,10 +179,10 @@ public class App {
             new ScalarMult()
         )
     );
-    hashMap.put(
-        "Complexity",
-        new MaxMinQuotient<Accel>(complexityEstimate)
-    );
+    // hashMap.put(
+    //     "Complexity",
+    //     new MaxMinQuotient<Accel>(complexityEstimate)
+    // );
     hashMap.put(
         "Complexity DynamicTimeWarping",
         new MultiplyDistance<TimeSeries<Accel>>(
