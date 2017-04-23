@@ -22,8 +22,10 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
   private Threshold threshold;
   private String name;
   private List<TimeSeries<Accel>> resultTsList;
-  private int successCount;
-  private int failCount;
+  private int[] truePositive;
+  private int[] trueNegative;
+  private int[] falsePositive;
+  private int[] falseNegative;
   private int nncCallCount;
 
   /**
@@ -45,8 +47,16 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     this.windowSize = windowSize;
     this.threshold = threshold;
     this.name = name;
-    this.successCount = 0;
-    this.failCount = 0;
+    this.truePositive = new int[8];
+    this.trueNegative = new int[8];
+    this.falsePositive = new int[8];
+    this.falseNegative = new int[8];
+    for (int i = 0; i < 8; i++) {
+      this.truePositive[i] = 0;
+      this.trueNegative[i] = 0;
+      this.falsePositive[i] = 0;
+      this.falseNegative[i] = 0;
+    }
     this.nncCallCount = 0;
     for (TimeSeries<Accel> ts : tsList) {
       this.slideOverTimeSeries(ts);
@@ -57,32 +67,76 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     return this.name;
   }
 
-  public int getSuccessCount() {
-    return this.successCount;
-  }
-
-  public int getFailCount() {
-    return this.failCount;
-  }
-
   public int getNncCallCount() {
     return this.nncCallCount;
   }
 
-  public double getSuccessQuotient() {
-    return (this.getSuccessCount() * 1.0) / this.getFailCount();
+  public int getTruePositve(int index) {
+    return this.truePositive[index];
+  }
+
+  public int getTrueNegative(int index) {
+    return this.trueNegative[index];
+  }
+
+  public int getFalsePositive(int index) {
+    return this.falsePositive[index];
+  }
+
+  public int getFalseNegative(int index) {
+    return this.falseNegative[index];
+  }
+
+  public double getMicroPrecision() {
+    int sumDividend = 0;
+    int sumDivisor = 0;
+    for (int i = 0; i < 8; i++) {
+      sumDividend += this.getTruePositve(i);
+      sumDivisor += this.getTruePositve(i) + this.getFalsePositive(i);
+    }
+    return (1.0 * sumDividend) / sumDivisor;
+  }
+
+  public double getMicroRecall() {
+    int sumDividend = 0;
+    int sumDivisor = 0;
+    for (int i = 0; i < 8; i++) {
+      sumDividend += this.getTruePositve(i);
+      sumDivisor += this.getTruePositve(i) + this.getFalseNegative(i);
+    }
+    return (1.0 * sumDividend) / sumDivisor;
+  }
+
+  public double getAverageAccuracy() {
+    double sum = 0;
+    for (int i = 0; i < 8; i++) {
+      sum += (1.0 * (this.getTruePositve(i) + this.getTrueNegative(i)))
+          / (this.getTruePositve(i) + this.getFalseNegative(i)
+          + this.getFalsePositive(i) + this.getTrueNegative(i));
+    }
+    return sum / 8;
   }
 
   /**
-   * Compares two SlidingWindow by successQuotient.
+   * Returns the F Score of the SlidingWindow.
+   */
+  public double getFscore(double beta) {
+    double precision = this.getMicroPrecision();
+    double recall = this.getMicroRecall();
+    double betaSquared = beta * beta;
+    return ((1 + betaSquared) * precision * recall) / ((betaSquared * precision) + recall);
+  }
+
+  /**
+   * Compares two SlidingWindow by f1Score.
    */
   public int compareTo(SlidingWindow swf) {
-    double quotient = this.getSuccessQuotient();
-    double swfQuotient = swf.getSuccessQuotient();
-    if (quotient > swfQuotient) {
+    double f1Score = this.getFscore(1);
+    double swfF1Score = swf.getFscore(1);
+    if (f1Score > swfF1Score) {
       return 1;
     }
-    if (quotient < swfQuotient) {
+    if (f1Score < swfF1Score) {
       return -1;
     }
     int nncCount = this.getNncCallCount();
@@ -146,14 +200,30 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       TimeSeries<Accel> taggedRecord,
       TimeSeries<Accel> record
   ) {
-    for (int i = 0; i < taggedRecord.size(); i++) {
-      String expectedTag = taggedRecord.get(i).getTag();
-      String tag = record.get(i).getTag();
-      if (!expectedTag.equals(tag)) {
-        this.failCount++;
-      } else if (!expectedTag.equals("")) {
-        this.successCount++;
+    // System.out.println(this.getName());
+    for (int i = 0; i < 8; i++) {
+      String gestureIndex = Integer.toString(i + 9);
+      for (int j = 0; j < taggedRecord.size(); j++) {
+        String expectedTag = taggedRecord.get(j).getTag();
+        String tag = record.get(j).getTag();
+        if (expectedTag.equals(gestureIndex)) {
+          if (tag.equals(expectedTag)) {
+            this.truePositive[i]++;
+          } else {
+            this.falseNegative[i]++;
+          }
+        } else {
+          if (tag.equals(gestureIndex)) {
+            this.falsePositive[i]++;
+          } else {
+            this.trueNegative[i]++;
+          }
+        }
       }
+    //   System.out.println("Gesture " + i + " truePositive: " + this.truePositive[i]);
+    //   System.out.println("Gesture " + i + " trueNegative: " + this.trueNegative[i]);
+    //   System.out.println("Gesture " + i + " falsePositive: " + this.falsePositive[i]);
+    //   System.out.println("Gesture " + i + " falseNegative: " + this.falseNegative[i]);
     }
   }
 }

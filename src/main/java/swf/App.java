@@ -49,8 +49,7 @@ public class App {
     Collections.reverse(swEvaList);
     for (SlidingWindow swEva : swEvaList) {
       System.out.println(
-          "\"" + swEva.getName() + "\";" + swEva.getSuccessQuotient() + ";"
-              + swEva.getSuccessCount() + ";" + swEva.getFailCount() + ";"
+          "\"" + swEva.getName() + "\";" + swEva.getFscore(1) + ";"
               + swEva.getNncCallCount()
       );
     }
