@@ -87,6 +87,9 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     return this.falseNegative[index];
   }
 
+  /**
+   * Returns the precision.
+   */
   public double getMicroPrecision() {
     int sumDividend = 0;
     int sumDivisor = 0;
@@ -97,6 +100,9 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     return (1.0 * sumDividend) / sumDivisor;
   }
 
+  /**
+   * Returns the recall.
+   */
   public double getMicroRecall() {
     int sumDividend = 0;
     int sumDivisor = 0;
@@ -107,6 +113,9 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     return (1.0 * sumDividend) / sumDivisor;
   }
 
+  /**
+   * Returns the average accuracy.
+   */
   public double getAverageAccuracy() {
     double sum = 0;
     for (int i = 0; i < 8; i++) {
@@ -124,7 +133,7 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     double precision = this.getMicroPrecision();
     double recall = this.getMicroRecall();
     double betaSquared = beta * beta;
-    return ((1 + betaSquared) * precision * recall) / ((betaSquared * precision) + recall);
+    return ((1 + betaSquared) * precision * recall) / (betaSquared * precision + recall);
   }
 
   /**
@@ -200,7 +209,6 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       TimeSeries<Accel> taggedRecord,
       TimeSeries<Accel> record
   ) {
-    // System.out.println(this.getName());
     for (int i = 0; i < 8; i++) {
       String gestureIndex = Integer.toString(i + 9);
       for (int j = 0; j < taggedRecord.size(); j++) {
@@ -220,10 +228,6 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
           }
         }
       }
-    //   System.out.println("Gesture " + i + " truePositive: " + this.truePositive[i]);
-    //   System.out.println("Gesture " + i + " trueNegative: " + this.trueNegative[i]);
-    //   System.out.println("Gesture " + i + " falsePositive: " + this.falsePositive[i]);
-    //   System.out.println("Gesture " + i + " falseNegative: " + this.falseNegative[i]);
     }
   }
 }
