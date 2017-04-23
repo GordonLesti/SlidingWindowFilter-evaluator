@@ -142,10 +142,13 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
   public int compareTo(SlidingWindow swf) {
     double f1Score = this.getFscore(1);
     double swfF1Score = swf.getFscore(1);
-    if (f1Score > swfF1Score) {
+    if (Double.isNaN(f1Score) && Double.isNaN(swfF1Score)) {
+      return 0;
+    }
+    if (f1Score > swfF1Score || Double.isNaN(swfF1Score)) {
       return 1;
     }
-    if (f1Score < swfF1Score) {
+    if (f1Score < swfF1Score || Double.isNaN(f1Score)) {
       return -1;
     }
     int nncCount = this.getNncCallCount();
