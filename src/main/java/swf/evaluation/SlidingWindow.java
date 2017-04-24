@@ -217,17 +217,20 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       for (int j = 0; j < taggedRecord.size(); j++) {
         String expectedTag = taggedRecord.get(j).getTag();
         String tag = record.get(j).getTag();
-        if (expectedTag.equals(gestureIndex)) {
-          if (tag.equals(expectedTag)) {
+        boolean isTrue = (expectedTag.equals(gestureIndex) && expectedTag.equals(tag))
+            || (!expectedTag.equals(gestureIndex) && !tag.equals(gestureIndex));
+        boolean isPositive = tag.equals(gestureIndex);
+        if (isTrue) {
+          if (isPositive) {
             this.truePositive[i]++;
           } else {
-            this.falseNegative[i]++;
+            this.trueNegative[i]++;
           }
         } else {
-          if (tag.equals(gestureIndex)) {
+          if (isPositive) {
             this.falsePositive[i]++;
           } else {
-            this.trueNegative[i]++;
+            this.falseNegative[i]++;
           }
         }
       }
