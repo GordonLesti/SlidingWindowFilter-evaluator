@@ -16,7 +16,7 @@ public class DynamicTimeWarping<T> implements swf.measure.Distance<TimeSeries<T>
   public double distance(TimeSeries<T> ts1, TimeSeries<T> ts2) {
     int size1 = ts1.size();
     int size2 = ts2.size();
-    double[][] grid = new double[size1][size2];
+    double[][] matrix = new double[size1][size2];
     int index1 = 0;
     for (Point<T> p1 : ts1) {
       int index2 = 0;
@@ -25,27 +25,27 @@ public class DynamicTimeWarping<T> implements swf.measure.Distance<TimeSeries<T>
         if (index1 > 0) {
           if (index2 > 0) {
             cost = Math.min(
-                grid[index1 - 1][index2],
+                matrix[index1 - 1][index2],
                 Math.min(
-                    grid[index1 - 1][index2 - 1],
-                    grid[index1][index2 - 1]
+                    matrix[index1 - 1][index2 - 1],
+                    matrix[index1][index2 - 1]
                 )
             );
           } else {
-            cost = grid[index1 - 1][index2];
+            cost = matrix[index1 - 1][index2];
           }
         } else {
           if (index2 > 0) {
-            cost = grid[index1][index2 - 1];
+            cost = matrix[index1][index2 - 1];
           } else {
             cost = 0;
           }
         }
-        grid[index1][index2] = cost + this.distance.distance(p1.getData(), p2.getData());
+        matrix[index1][index2] = cost + this.distance.distance(p1.getData(), p2.getData());
         index2++;
       }
       index1++;
     }
-    return grid[size1 - 1][size2 - 1];
+    return matrix[size1 - 1][size2 - 1];
   }
 }
