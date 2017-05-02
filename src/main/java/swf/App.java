@@ -47,9 +47,11 @@ public class App {
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
     Collections.sort(swEvaList);
     Collections.reverse(swEvaList);
+    System.out.println("name;precision;recall;f1score;#(nnc)");
     for (SlidingWindow swEva : swEvaList) {
       System.out.println(
-          "\"" + swEva.getName() + "\";" + swEva.getFscore(1) + ";"
+          "\"" + swEva.getName() + "\";" + swEva.getMicroPrecision() + ";"
+              + swEva.getMicroRecall() + ";" + swEva.getFscore(1) + ";"
               + swEva.getNncCallCount()
       );
     }
@@ -58,7 +60,7 @@ public class App {
   private static List<TimeSeries<Accel>> getRecords() {
     LinkedList<TimeSeries<Accel>> tsList = new LinkedList<TimeSeries<Accel>>();
     TimeSeriesParser tsp = new TimeSeriesParser();
-    for (int i = 1; i < 11; i++) {
+    for (int i = 1; i < 15; i++) {
       tsList.add(tsp.parseFile("build/resources/main/record" + i + ".txt"));
     }
     return tsList;
@@ -84,7 +86,7 @@ public class App {
                     filterHashMap.get(filterName),
                     windowSizeHashMap.get(wsName),
                     thresholdHashMap.get(thresholdName),
-                    distName + " " + wsName + " " + filterName + " " + thresholdName
+                    distName + " " + wsName + " " + filterName
                 )
             );
           }
@@ -128,18 +130,18 @@ public class App {
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
       hashMap.put(
-          "ComplexityFilter(" + factor + ")",
+          "CF(" + factor + ")",
           new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
       );
       hashMap.put(
-          "AverageComplexityFilter(" + factor + ")",
+          "ACF(" + factor + ")",
           new Estimate<TimeSeries<Accel>>(
               new AverageEstimate<Accel>(complexityEstimate),
               factor
           )
       );
       hashMap.put(
-          "VarianceFilter(" + factor + ")",
+          "VF(" + factor + ")",
           new Estimate<TimeSeries<Accel>>(
               new Variance<Accel>(
                   new Distance(),
@@ -167,37 +169,37 @@ public class App {
         new HashMap<String, swf.measure.Distance<TimeSeries<Accel>>>();
     Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
     hashMap.put(
-        "DynamicTimeWarping",
+        "DTW",
         new DynamicTimeWarping<Accel>(new Distance())
     );
     hashMap.put(
-        "Normalized DynamicTimeWarping",
+        "NDTW",
         new NormalizeDistance<Accel>(
             new DynamicTimeWarping<Accel>(new Distance()),
             new Add(),
             new ScalarMult()
         )
     );
+    // hashMap.put(
+    //     "Complexity",
+    //     new MaxMinQuotient<Accel>(complexityEstimate)
+    // );
     hashMap.put(
-        "Complexity",
-        new MaxMinQuotient<Accel>(complexityEstimate)
-    );
-    hashMap.put(
-        "Complexity DynamicTimeWarping",
+        "CIDDTW",
         new MultiplyDistance<TimeSeries<Accel>>(
             new MaxMinQuotient<Accel>(complexityEstimate),
             new DynamicTimeWarping<Accel>(new Distance())
         )
     );
     hashMap.put(
-        "AverageComplexity DynamicTimeWarping",
+        "ACIDDTW",
         new MultiplyDistance<TimeSeries<Accel>>(
             new MaxMinQuotient<Accel>(new AverageEstimate<Accel>(complexityEstimate)),
             new DynamicTimeWarping<Accel>(new Distance())
         )
     );
     hashMap.put(
-        "Variance DynamicTimeWarping",
+        "VDTW",
         new MultiplyDistance<TimeSeries<Accel>>(
             new MaxMinQuotient<Accel>(
                 new Variance<Accel>(
