@@ -12,7 +12,6 @@ import swf.accel.operator.ScalarMult;
 import swf.evaluation.SlidingWindow;
 import swf.evaluation.slidingwindow.Threshold;
 import swf.evaluation.slidingwindow.WindowSize;
-import swf.evaluation.slidingwindow.threshold.AverageDistance;
 import swf.evaluation.slidingwindow.threshold.MinDistance;
 import swf.evaluation.slidingwindow.windowsize.Average;
 import swf.evaluation.slidingwindow.windowsize.Max;
@@ -52,7 +51,7 @@ public class App {
       System.out.println(
           "\"" + swEva.getName() + "\";" + swEva.getMicroPrecision() + ";"
               + swEva.getMicroRecall() + ";" + swEva.getFscore(1) + ";"
-              + swEva.getNncCallCount()
+              + swEva.getAverageAccuracy() + ";" + swEva.getNncCallCount()
       );
     }
   }
@@ -117,7 +116,6 @@ public class App {
   private static HashMap<String, Threshold> getThresholds() {
     HashMap<String, Threshold> hashMap = new HashMap<String, Threshold>();
     hashMap.put("MinDistance", new MinDistance());
-    // hashMap.put("AverageDistance", new AverageDistance());
     return hashMap;
   }
 
