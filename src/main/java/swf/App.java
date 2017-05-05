@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import swf.TimeSeries;
 import swf.accel.io.TimeSeriesParser;
-import swf.accel.measure.Distance;
+import swf.accel.measure.EuclideanDistance;
 import swf.accel.operator.Add;
 import swf.accel.operator.ScalarMult;
 import swf.evaluation.SlidingWindow;
@@ -124,7 +124,7 @@ public class App {
         new HashMap<String, Factory<TimeSeries<Accel>>>();
     hashMap.put("NoFilter", new TrueFilter<TimeSeries<Accel>>());
     double[] filterBlurFactors = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
-    Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
+    Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
       hashMap.put(
@@ -142,7 +142,7 @@ public class App {
           "VF(" + factor + ")",
           new Estimate<TimeSeries<Accel>>(
               new Variance<Accel>(
-                  new Distance(),
+                  new EuclideanDistance(),
                   new Add(),
                   new ScalarMult()
               ),
@@ -165,15 +165,15 @@ public class App {
   private static HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> getDistances() {
     HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> hashMap =
         new HashMap<String, swf.measure.Distance<TimeSeries<Accel>>>();
-    Complexity<Accel> complexityEstimate = new Complexity<Accel>(new Distance());
+    Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
     hashMap.put(
         "DTW",
-        new DynamicTimeWarping<Accel>(new Distance())
+        new DynamicTimeWarping<Accel>(new EuclideanDistance())
     );
     hashMap.put(
         "NDTW",
         new NormalizeDistance<Accel>(
-            new DynamicTimeWarping<Accel>(new Distance()),
+            new DynamicTimeWarping<Accel>(new EuclideanDistance()),
             new Add(),
             new ScalarMult()
         )
@@ -186,14 +186,14 @@ public class App {
         "CIDDTW",
         new MultiplyDistance<TimeSeries<Accel>>(
             new MaxMinQuotient<Accel>(complexityEstimate),
-            new DynamicTimeWarping<Accel>(new Distance())
+            new DynamicTimeWarping<Accel>(new EuclideanDistance())
         )
     );
     hashMap.put(
         "ACIDDTW",
         new MultiplyDistance<TimeSeries<Accel>>(
             new MaxMinQuotient<Accel>(new AverageEstimate<Accel>(complexityEstimate)),
-            new DynamicTimeWarping<Accel>(new Distance())
+            new DynamicTimeWarping<Accel>(new EuclideanDistance())
         )
     );
     hashMap.put(
@@ -201,12 +201,12 @@ public class App {
         new MultiplyDistance<TimeSeries<Accel>>(
             new MaxMinQuotient<Accel>(
                 new Variance<Accel>(
-                    new Distance(),
+                    new EuclideanDistance(),
                     new Add(),
                     new ScalarMult()
                 )
             ),
-            new DynamicTimeWarping<Accel>(new Distance())
+            new DynamicTimeWarping<Accel>(new EuclideanDistance())
         )
     );
     return hashMap;

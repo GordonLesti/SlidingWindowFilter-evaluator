@@ -2,7 +2,7 @@ package swf.accel.measure;
 
 import swf.Accel;
 
-public class Distance implements swf.measure.Distance<Accel> {
+public class EuclideanDistance implements swf.measure.Distance<Accel> {
   /**
    * Calculates the distance between two Accel objects.
    */
