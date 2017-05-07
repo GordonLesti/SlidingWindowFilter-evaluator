@@ -46,12 +46,14 @@ public class App {
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
     Collections.sort(swEvaList);
     Collections.reverse(swEvaList);
-    System.out.println("name;precision;recall;f1score;#(nnc)");
+    System.out.println("distance;filter;window;threshold;precision;recall;f1score;accuracy;#(nnc)");
     for (SlidingWindow swEva : swEvaList) {
       System.out.println(
-          "\"" + swEva.getName() + "\";" + swEva.getMicroPrecision() + ";"
-              + swEva.getMicroRecall() + ";" + swEva.getFscore(1) + ";"
-              + swEva.getAverageAccuracy() + ";" + swEva.getNncCallCount()
+          swEva.getDistName() + ";" + swEva.getFilterName() + ";"
+              + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
+              + swEva.getMicroPrecision() + ";" + swEva.getMicroRecall() + ";"
+              + swEva.getFscore(1) + ";" + swEva.getAverageAccuracy()
+              + ";" + swEva.getNncCallCount()
       );
     }
   }
@@ -85,7 +87,10 @@ public class App {
                     filterHashMap.get(filterName),
                     windowSizeHashMap.get(wsName),
                     thresholdHashMap.get(thresholdName),
-                    distName + " " + wsName + " " + filterName
+                    distName,
+                    filterName,
+                    wsName,
+                    thresholdName
                 )
             );
           }

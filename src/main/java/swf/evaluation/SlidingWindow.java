@@ -20,7 +20,10 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
   private swf.filter.Factory<TimeSeries<Accel>> filterFactory;
   private WindowSize windowSize;
   private Threshold threshold;
-  private String name;
+  private String distName;
+  private String filterName;
+  private String windowSizeName;
+  private String thresholdName;
   private List<TimeSeries<Accel>> resultTsList;
   private int[] truePositive;
   private int[] trueNegative;
@@ -38,7 +41,10 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       swf.filter.Factory<TimeSeries<Accel>> filterFactory,
       WindowSize windowSize,
       Threshold threshold,
-      String name
+      String distName,
+      String filterName,
+      String windowSizeName,
+      String thresholdName
   ) {
     this.tsList = tsList;
     this.distance = distance;
@@ -46,7 +52,10 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     this.filterFactory = filterFactory;
     this.windowSize = windowSize;
     this.threshold = threshold;
-    this.name = name;
+    this.distName = distName;
+    this.filterName = filterName;
+    this.windowSizeName = windowSizeName;
+    this.thresholdName = thresholdName;
     this.truePositive = new int[8];
     this.trueNegative = new int[8];
     this.falsePositive = new int[8];
@@ -63,8 +72,20 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     }
   }
 
-  public String getName() {
-    return this.name;
+  public String getDistName() {
+    return this.distName;
+  }
+
+  public String getFilterName() {
+    return this.filterName;
+  }
+
+  public String getWindowSizeName() {
+    return this.windowSizeName;
+  }
+
+  public String getThesholdName() {
+    return this.thresholdName;
   }
 
   public int getNncCallCount() {
