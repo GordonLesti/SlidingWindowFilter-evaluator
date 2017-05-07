@@ -6,19 +6,20 @@ import swf.TimeSeries;
 import swf.evaluation.slidingwindow.Threshold;
 import swf.measure.Distance;
 
-public class MinDistance implements Threshold {
+public class HalfMinDistance implements Threshold {
   /**
-   * Calculates the minimum distance between the TimeSeries.
+   * Calculates the half minimum distance between the TimeSeries.
    */
   public double[] threshold(
-      List<TimeSeries<Accel>> tsList,
+      List<TimeSeries<Accel>> trainingList,
+      List<TimeSeries<Accel>> testList,
       Distance<TimeSeries<Accel>> distance
   ) {
-    double[] thresholds = new double[tsList.size()];
+    double[] thresholds = new double[trainingList.size()];
     int index = 0;
-    for (TimeSeries<Accel> ts1 : tsList) {
+    for (TimeSeries<Accel> ts1 : trainingList) {
       double min = Double.MAX_VALUE;
-      for (TimeSeries<Accel> ts2 : tsList) {
+      for (TimeSeries<Accel> ts2 : trainingList) {
         if (ts1 != ts2) {
           double dist = distance.distance(ts1, ts2);
           if (dist < min) {
@@ -26,7 +27,7 @@ public class MinDistance implements Threshold {
           }
         }
       }
-      thresholds[index] = min;
+      thresholds[index] = min / 2;
       index++;
     }
     return thresholds;

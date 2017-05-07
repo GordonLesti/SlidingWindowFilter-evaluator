@@ -7,7 +7,8 @@ import swf.measure.Distance;
 
 public interface Threshold {
   public double[] threshold(
-      List<TimeSeries<Accel>> tsList,
+      List<TimeSeries<Accel>> trainingList,
+      List<TimeSeries<Accel>> testList,
       Distance<TimeSeries<Accel>> distance
   );
 }

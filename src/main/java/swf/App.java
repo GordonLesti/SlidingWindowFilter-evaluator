@@ -12,7 +12,10 @@ import swf.accel.operator.ScalarMult;
 import swf.evaluation.SlidingWindow;
 import swf.evaluation.slidingwindow.Threshold;
 import swf.evaluation.slidingwindow.WindowSize;
-import swf.evaluation.slidingwindow.threshold.MinDistance;
+import swf.evaluation.slidingwindow.threshold.Cheating;
+import swf.evaluation.slidingwindow.threshold.HalfAverageDistance;
+import swf.evaluation.slidingwindow.threshold.HalfMiddleDistance;
+import swf.evaluation.slidingwindow.threshold.HalfMinDistance;
 import swf.evaluation.slidingwindow.windowsize.Average;
 import swf.evaluation.slidingwindow.windowsize.Max;
 import swf.evaluation.slidingwindow.windowsize.Middle;
@@ -120,7 +123,10 @@ public class App {
 
   private static HashMap<String, Threshold> getThresholds() {
     HashMap<String, Threshold> hashMap = new HashMap<String, Threshold>();
-    hashMap.put("MinDistance", new MinDistance());
+    hashMap.put("HalfAverageDistance", new HalfAverageDistance());
+    hashMap.put("HalfMinDistance", new HalfMinDistance());
+    hashMap.put("HalfMiddleDistance", new HalfMiddleDistance());
+    hashMap.put("Cheating", new Cheating());
     return hashMap;
   }
 

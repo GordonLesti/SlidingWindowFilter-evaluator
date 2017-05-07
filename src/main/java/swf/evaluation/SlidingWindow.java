@@ -184,9 +184,11 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
   }
 
   private void slideOverTimeSeries(TimeSeries<Accel> ts) {
+    LinkedList<TimeSeries<Accel>> trainingData = new LinkedList<TimeSeries<Accel>>();
     LinkedList<TimeSeries<Accel>> testData = new LinkedList<TimeSeries<Accel>>();
     for (int i = 1; i < 9; i++) {
-      testData.add(ts.intervalByTag(Integer.toString(i)));
+      trainingData.add(ts.intervalByTag(Integer.toString(i)));
+      testData.add(ts.intervalByTag(Integer.toString(i + 8)));
     }
     int fromIndex = ts.lastIndexOf(ts.intervalByTag(Integer.toString(8)).getLast()) + 1;
     int toIndex = ts.size();
@@ -195,26 +197,26 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     for (Point<Accel> point : taggedRecord) {
       record.add(new Point<Accel>(point.getData()));
     }
-    int windowSize = this.windowSize.windowSize(testData);
+    int windowSize = this.windowSize.windowSize(trainingData);
     int stepSize = (int) (windowSize / 10.0);
     int time = 0;
     NearestNeighbourClassificator<TimeSeries<Accel>> nnc =
-        this.nncFactory.create(this.distance, testData);
-    Filter<TimeSeries<Accel>> filter = this.filterFactory.create(testData);
-    double[] thresholds = this.threshold.threshold(testData, this.distance);
+        this.nncFactory.create(this.distance, trainingData);
+    Filter<TimeSeries<Accel>> filter = this.filterFactory.create(trainingData);
+    double[] thresholds = this.threshold.threshold(trainingData, testData, this.distance);
     while (time + windowSize <= record.size()) {
       TimeSeries<Accel> window = record.subTimeSeries(time, time + windowSize);
       if (filter.filter(window)) {
         TimeSeries<Accel> nn = nnc.nearestNeighbour(window);
         this.nncCallCount++;
         double dist = this.distance.distance(window, nn);
-        if (dist <= thresholds[testData.indexOf(nn)]) {
+        if (dist <= thresholds[trainingData.indexOf(nn)]) {
           for (int i = time; i < time + windowSize; i++) {
             record.set(
                 i,
                 new Point<Accel>(
                     record.get(i).getData(),
-                    Integer.toString(testData.indexOf(nn) + 9)
+                    Integer.toString(trainingData.indexOf(nn) + 9)
                 )
             );
           }
