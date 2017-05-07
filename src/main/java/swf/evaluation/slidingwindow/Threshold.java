@@ -1,13 +1,13 @@
 package swf.evaluation.slidingwindow;
 
-import java.util.Collection;
+import java.util.List;
 import swf.Accel;
 import swf.TimeSeries;
 import swf.measure.Distance;
 
 public interface Threshold {
-  public double threshold(
-      Collection<TimeSeries<Accel>> tsCollection,
+  public double[] threshold(
+      List<TimeSeries<Accel>> tsList,
       Distance<TimeSeries<Accel>> distance
   );
 }

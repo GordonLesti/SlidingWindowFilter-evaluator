@@ -201,14 +201,14 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
     NearestNeighbourClassificator<TimeSeries<Accel>> nnc =
         this.nncFactory.create(this.distance, testData);
     Filter<TimeSeries<Accel>> filter = this.filterFactory.create(testData);
-    double threshold = this.threshold.threshold(testData, this.distance);
+    double[] thresholds = this.threshold.threshold(testData, this.distance);
     while (time + windowSize <= record.size()) {
       TimeSeries<Accel> window = record.subTimeSeries(time, time + windowSize);
       if (filter.filter(window)) {
         TimeSeries<Accel> nn = nnc.nearestNeighbour(window);
         this.nncCallCount++;
         double dist = this.distance.distance(window, nn);
-        if (dist < threshold) {
+        if (dist <= thresholds[testData.indexOf(nn)]) {
           for (int i = time; i < time + windowSize; i++) {
             record.set(
                 i,
