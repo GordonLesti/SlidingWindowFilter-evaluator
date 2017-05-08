@@ -8,7 +8,7 @@ import swf.measure.Distance;
 
 public class HalfAverageDistance implements Threshold {
   /**
-   * Calculates the half minimum distance between the TimeSeries.
+   * Calculates the half average distance between the TimeSeries.
    */
   public double[] threshold(
       List<TimeSeries<Accel>> trainingList,

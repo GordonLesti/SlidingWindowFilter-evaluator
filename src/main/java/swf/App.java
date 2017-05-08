@@ -1,5 +1,6 @@
 package swf;
 
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,15 +50,21 @@ public class App {
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
     Collections.sort(swEvaList);
     Collections.reverse(swEvaList);
-    System.out.println("distance;filter;window;threshold;precision;recall;f1score;accuracy;#(nnc)");
+    String output = "distance;filter;window;threshold;precision;recall;f1score;accuracy;#(nnc)\n";
     for (SlidingWindow swEva : swEvaList) {
-      System.out.println(
-          swEva.getDistName() + ";" + swEva.getFilterName() + ";"
-              + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
-              + swEva.getMicroPrecision() + ";" + swEva.getMicroRecall() + ";"
-              + swEva.getFscore(1) + ";" + swEva.getAverageAccuracy()
-              + ";" + swEva.getNncCallCount()
-      );
+      output += swEva.getDistName() + ";" + swEva.getFilterName() + ";"
+          + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
+          + swEva.getMicroPrecision() + ";" + swEva.getMicroRecall() + ";"
+          + swEva.getFscore(1) + ";" + swEva.getAverageAccuracy()
+          + ";" + swEva.getNncCallCount() + "\n";
+    }
+    String outputFilename = "build/resources/main/swf-result.csv";
+    try {
+      PrintWriter writer = new PrintWriter(outputFilename, "UTF-8");
+      writer.print(output);
+      writer.close();
+    } catch (Exception ioEx) {
+      System.out.println("Unable to write result into file " + outputFilename);
     }
   }
 
@@ -78,6 +85,9 @@ public class App {
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
     HashMap<String, Factory<TimeSeries<Accel>>> filterHashMap = getFilters();
     HashMap<String, Threshold> thresholdHashMap = getThresholds();
+    int fullSize = distHashMap.size() * windowSizeHashMap.size() * filterHashMap.size()
+        * thresholdHashMap.size();
+    int counter = 0;
     for (String distName : distHashMap.keySet()) {
       for (String wsName : windowSizeHashMap.keySet()) {
         for (String filterName : filterHashMap.keySet()) {
@@ -96,10 +106,13 @@ public class App {
                     thresholdName
                 )
             );
+            counter++;
+            System.out.print(counter + "/" + fullSize + "\r");
           }
         }
       }
     }
+    System.out.println(fullSize + "/" + fullSize);
     return evaList;
   }
 
@@ -126,7 +139,8 @@ public class App {
     hashMap.put("HalfAverageDistance", new HalfAverageDistance());
     hashMap.put("HalfMinDistance", new HalfMinDistance());
     hashMap.put("HalfMiddleDistance", new HalfMiddleDistance());
-    hashMap.put("Cheating", new Cheating());
+    hashMap.put("Cheating(1.1)", new Cheating(1.1));
+    hashMap.put("Cheating(1.2)", new Cheating(1.2));
     return hashMap;
   }
 
@@ -189,10 +203,6 @@ public class App {
             new ScalarMult()
         )
     );
-    // hashMap.put(
-    //     "Complexity",
-    //     new MaxMinQuotient<Accel>(complexityEstimate)
-    // );
     hashMap.put(
         "CIDDTW",
         new MultiplyDistance<TimeSeries<Accel>>(
