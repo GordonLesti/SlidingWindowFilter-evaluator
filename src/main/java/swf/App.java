@@ -24,11 +24,9 @@ import swf.evaluation.slidingwindow.windowsize.Min;
 import swf.filter.Factory;
 import swf.filter.factory.Estimate;
 import swf.filter.factory.TrueFilter;
-import swf.measure.MultiplyDistance;
 import swf.measure.timeseries.AverageEstimate;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
-import swf.measure.timeseries.MaxMinQuotient;
 import swf.measure.timeseries.NormalizeDistance;
 import swf.measure.timeseries.Variance;
 import swf.nnc.factory.FullSearch;
@@ -201,33 +199,6 @@ public class App {
             new DynamicTimeWarping<Accel>(new EuclideanDistance()),
             new Add(),
             new ScalarMult()
-        )
-    );
-    hashMap.put(
-        "CIDDTW",
-        new MultiplyDistance<TimeSeries<Accel>>(
-            new MaxMinQuotient<Accel>(complexityEstimate),
-            new DynamicTimeWarping<Accel>(new EuclideanDistance())
-        )
-    );
-    hashMap.put(
-        "ACIDDTW",
-        new MultiplyDistance<TimeSeries<Accel>>(
-            new MaxMinQuotient<Accel>(new AverageEstimate<Accel>(complexityEstimate)),
-            new DynamicTimeWarping<Accel>(new EuclideanDistance())
-        )
-    );
-    hashMap.put(
-        "VDTW",
-        new MultiplyDistance<TimeSeries<Accel>>(
-            new MaxMinQuotient<Accel>(
-                new Variance<Accel>(
-                    new EuclideanDistance(),
-                    new Add(),
-                    new ScalarMult()
-                )
-            ),
-            new DynamicTimeWarping<Accel>(new EuclideanDistance())
         )
     );
     return hashMap;
