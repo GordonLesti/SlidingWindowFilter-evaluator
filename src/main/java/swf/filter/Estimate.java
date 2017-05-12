@@ -17,8 +17,8 @@ public class Estimate<T> implements Filter<T> {
       double blurFactor
   ) {
     this.estimate = estimate;
-    double min = Double.MAX_VALUE;
-    double max = Double.MIN_VALUE;
+    double min = Double.POSITIVE_INFINITY;
+    double max = Double.NEGATIVE_INFINITY;
     for (T obj : tsCollection) {
       double estValue = this.estimate.estimate(obj);
       if (estValue < min) {

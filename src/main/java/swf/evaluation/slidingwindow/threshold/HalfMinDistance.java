@@ -18,7 +18,7 @@ public class HalfMinDistance implements Threshold {
     double[] thresholds = new double[trainingList.size()];
     int index = 0;
     for (TimeSeries<Accel> ts1 : trainingList) {
-      double min = Double.MAX_VALUE;
+      double min = Double.POSITIVE_INFINITY;
       for (TimeSeries<Accel> ts2 : trainingList) {
         if (ts1 != ts2) {
           double dist = distance.distance(ts1, ts2);

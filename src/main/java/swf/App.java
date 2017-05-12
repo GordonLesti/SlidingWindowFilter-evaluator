@@ -24,11 +24,15 @@ import swf.evaluation.slidingwindow.windowsize.Min;
 import swf.filter.Factory;
 import swf.filter.factory.Estimate;
 import swf.filter.factory.TrueFilter;
+import swf.measure.Distance;
 import swf.measure.timeseries.AverageEstimate;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
 import swf.measure.timeseries.NormalizeDistance;
 import swf.measure.timeseries.Variance;
+import swf.measure.timeseries.dynamictimewarping.AdjustmentWindowCondition;
+import swf.measure.timeseries.dynamictimewarping.NoCondition;
+import swf.measure.timeseries.dynamictimewarping.SakoeChibaBand;
 import swf.nnc.factory.FullSearch;
 
 public class App {
@@ -79,7 +83,7 @@ public class App {
       List<TimeSeries<Accel>> tsList
   ) {
     LinkedList<SlidingWindow> evaList = new LinkedList<SlidingWindow>();
-    HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> distHashMap = getDistances();
+    HashMap<String, Distance<TimeSeries<Accel>>> distHashMap = getDistances();
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
     HashMap<String, Factory<TimeSeries<Accel>>> filterHashMap = getFilters();
     HashMap<String, Threshold> thresholdHashMap = getThresholds();
@@ -118,7 +122,7 @@ public class App {
       List<TimeSeries<Accel>> tsList
   ) {
     LinkedList<swf.evaluation.Distance> evaList = new LinkedList<swf.evaluation.Distance>();
-    HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> hashMap = getDistances();
+    HashMap<String, Distance<TimeSeries<Accel>>> hashMap = getDistances();
     for (String name : hashMap.keySet()) {
       evaList.add(
           new swf.evaluation.Distance(
@@ -146,7 +150,7 @@ public class App {
     HashMap<String, Factory<TimeSeries<Accel>>> hashMap =
         new HashMap<String, Factory<TimeSeries<Accel>>>();
     hashMap.put("NoFilter", new TrueFilter<TimeSeries<Accel>>());
-    double[] filterBlurFactors = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
+    double[] filterBlurFactors = {1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0};
     Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
@@ -185,22 +189,43 @@ public class App {
     return hashMap;
   }
 
-  private static HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> getDistances() {
-    HashMap<String, swf.measure.Distance<TimeSeries<Accel>>> hashMap =
-        new HashMap<String, swf.measure.Distance<TimeSeries<Accel>>>();
+  private static HashMap<String, Distance<TimeSeries<Accel>>> getDistances() {
+    HashMap<String, Distance<TimeSeries<Accel>>> hashMap =
+        new HashMap<String, Distance<TimeSeries<Accel>>>();
     Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
-    hashMap.put(
-        "DTW",
-        new DynamicTimeWarping<Accel>(new EuclideanDistance())
-    );
-    hashMap.put(
-        "NDTW",
-        new NormalizeDistance<Accel>(
-            new DynamicTimeWarping<Accel>(new EuclideanDistance()),
-            new Add(),
-            new ScalarMult()
-        )
-    );
+    HashMap<String, AdjustmentWindowCondition> conditions = getConditions();
+    for (String conditionName : conditions.keySet()) {
+      AdjustmentWindowCondition condition = conditions.get(conditionName);
+      hashMap.put(
+          "DTW " + conditionName,
+          new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition)
+      );
+      hashMap.put(
+          "NDTW " + conditionName,
+          new NormalizeDistance<Accel>(
+              new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition),
+              new Add(),
+              new ScalarMult()
+          )
+      );
+    }
+    return hashMap;
+  }
+
+  private static HashMap<String, AdjustmentWindowCondition> getConditions() {
+    HashMap<String, AdjustmentWindowCondition> hashMap =
+        new HashMap<String, AdjustmentWindowCondition>();
+    hashMap.put("", new NoCondition());
+    double[] factors = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
+        0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19,
+        0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29,
+        0.3, 0.4, 0.6, 0.8};
+    for (int i = 0; i < factors.length; i++) {
+      hashMap.put(
+          "SCB(" + Double.toString(factors[i]) + ")",
+          new SakoeChibaBand(factors[i])
+      );
+    }
     return hashMap;
   }
 }

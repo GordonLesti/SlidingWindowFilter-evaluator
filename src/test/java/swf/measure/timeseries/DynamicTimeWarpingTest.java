@@ -4,6 +4,7 @@ import org.junit.Test;
 import swf.TimeSeries;
 import swf.measure.Distance;
 import swf.measure.timeseries.DynamicTimeWarping;
+import swf.measure.timeseries.dynamictimewarping.NoCondition;
 import swf.timeseries.Point;
 
 public class DynamicTimeWarpingTest {
@@ -23,6 +24,12 @@ public class DynamicTimeWarpingTest {
         return Math.abs(int1 - int2) * 1.0;
       }
     };
-    assertEquals(253, new DynamicTimeWarping<Integer>(distance).distance(ts1, ts2), 0);
+    assertEquals(
+        253,
+        new DynamicTimeWarping<Integer>(
+            distance,
+            new NoCondition()
+        ).distance(ts1, ts2),
+        0);
   }
 }
