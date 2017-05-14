@@ -70,6 +70,9 @@ public class SlidingWindow implements Comparable<SlidingWindow>, Callable<Slidin
     this.nncCallCount = 0;
   }
 
+  /**
+   * Start simulation.
+   */
   public SlidingWindow call() {
     for (TimeSeries<Accel> ts : this.tsList) {
       this.slideOverTimeSeries(ts);
