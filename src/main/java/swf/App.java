@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import swf.TimeSeries;
 import swf.accel.io.TimeSeriesParser;
 import swf.accel.measure.EuclideanDistance;
@@ -83,6 +87,8 @@ public class App {
       List<TimeSeries<Accel>> tsList
   ) {
     LinkedList<SlidingWindow> evaList = new LinkedList<SlidingWindow>();
+    LinkedList<Future<SlidingWindow>> futureList = new LinkedList<Future<SlidingWindow>>();
+    ExecutorService service = Executors.newFixedThreadPool(4);
     HashMap<String, Distance<TimeSeries<Accel>>> distHashMap = getDistances();
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
     HashMap<String, Factory<TimeSeries<Accel>>> filterHashMap = getFilters();
@@ -94,26 +100,38 @@ public class App {
       for (String wsName : windowSizeHashMap.keySet()) {
         for (String filterName : filterHashMap.keySet()) {
           for (String thresholdName : thresholdHashMap.keySet()) {
-            evaList.add(
-                new SlidingWindow(
-                    tsList,
-                    distHashMap.get(distName),
-                    new FullSearch<TimeSeries<Accel>>(),
-                    filterHashMap.get(filterName),
-                    windowSizeHashMap.get(wsName),
-                    thresholdHashMap.get(thresholdName),
-                    distName,
-                    filterName,
-                    wsName,
-                    thresholdName
+            futureList.add(
+                service.submit(
+                    new SlidingWindow(
+                        tsList,
+                        distHashMap.get(distName),
+                        new FullSearch<TimeSeries<Accel>>(),
+                        filterHashMap.get(filterName),
+                        windowSizeHashMap.get(wsName),
+                        thresholdHashMap.get(thresholdName),
+                        distName,
+                        filterName,
+                        wsName,
+                        thresholdName
+                    )
                 )
             );
-            counter++;
-            System.out.print(counter + "/" + fullSize + "\r");
           }
         }
       }
     }
+    try {
+      for (Future<SlidingWindow> future : futureList) {
+        evaList.add(future.get());
+        counter++;
+        System.out.print(counter + "/" + fullSize + "\r");
+      }
+    } catch (InterruptedException ex) {
+      ex.printStackTrace();
+    } catch (ExecutionException ex) {
+      ex.printStackTrace();
+    }
+    service.shutdownNow();
     System.out.println(fullSize + "/" + fullSize);
     return evaList;
   }

@@ -3,6 +3,7 @@ package swf.evaluation;
 import java.lang.Comparable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import swf.Accel;
 import swf.TimeSeries;
 import swf.evaluation.slidingwindow.Threshold;
@@ -13,7 +14,7 @@ import swf.nnc.Factory;
 import swf.nnc.NearestNeighbourClassificator;
 import swf.timeseries.Point;
 
-public class SlidingWindow implements Comparable<SlidingWindow> {
+public class SlidingWindow implements Comparable<SlidingWindow>, Callable<SlidingWindow> {
   private List<TimeSeries<Accel>> tsList;
   private Distance<TimeSeries<Accel>> distance;
   private Factory<TimeSeries<Accel>> nncFactory;
@@ -67,9 +68,13 @@ public class SlidingWindow implements Comparable<SlidingWindow> {
       this.falseNegative[i] = 0;
     }
     this.nncCallCount = 0;
-    for (TimeSeries<Accel> ts : tsList) {
+  }
+
+  public SlidingWindow call() {
+    for (TimeSeries<Accel> ts : this.tsList) {
       this.slideOverTimeSeries(ts);
     }
+    return this;
   }
 
   public String getDistName() {
