@@ -6,10 +6,10 @@ import swf.TimeSeries;
 import swf.evaluation.slidingwindow.Threshold;
 import swf.measure.Distance;
 
-public class Cheating implements Threshold {
+public class Peaking implements Threshold {
   private double blurFactor;
 
-  public Cheating(double blurFactor) {
+  public Peaking(double blurFactor) {
     this.blurFactor = blurFactor;
   }
 

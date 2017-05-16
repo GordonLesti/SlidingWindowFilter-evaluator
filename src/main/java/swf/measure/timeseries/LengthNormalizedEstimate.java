@@ -3,10 +3,10 @@ package swf.measure.timeseries;
 import swf.TimeSeries;
 import swf.measure.Estimate;
 
-public class AverageEstimate<T> implements Estimate<TimeSeries<T>> {
+public class LengthNormalizedEstimate<T> implements Estimate<TimeSeries<T>> {
   private Estimate<TimeSeries<T>> estimate;
 
-  public AverageEstimate(Estimate<TimeSeries<T>> estimate) {
+  public LengthNormalizedEstimate(Estimate<TimeSeries<T>> estimate) {
     this.estimate = estimate;
   }
 

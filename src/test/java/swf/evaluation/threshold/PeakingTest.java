@@ -4,11 +4,11 @@ import java.util.LinkedList;
 import org.junit.Test;
 import swf.Accel;
 import swf.TimeSeries;
-import swf.evaluation.slidingwindow.threshold.Cheating;
+import swf.evaluation.slidingwindow.threshold.Peaking;
 import swf.measure.Distance;
 import swf.timeseries.Point;
 
-public class CheatingTest {
+public class PeakingTest {
   @Test
   public void testThreshold() {
     int[] trainingSizes = {18, 94, 55, 6};
@@ -32,7 +32,7 @@ public class CheatingTest {
     double[] thresholds = {65 * 1.1, 43 * 1.1, 3 * 1.1, 50 * 1.1};
     assertArrayEquals(
         thresholds,
-        new Cheating(1.1).threshold(
+        new Peaking(1.1).threshold(
             trainingList,
             testList,
             new Distance<TimeSeries<Accel>>() {

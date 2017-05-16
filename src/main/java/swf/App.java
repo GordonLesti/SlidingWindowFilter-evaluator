@@ -17,10 +17,10 @@ import swf.accel.operator.ScalarMult;
 import swf.evaluation.SlidingWindow;
 import swf.evaluation.slidingwindow.Threshold;
 import swf.evaluation.slidingwindow.WindowSize;
-import swf.evaluation.slidingwindow.threshold.Cheating;
 import swf.evaluation.slidingwindow.threshold.HalfAverageDistance;
 import swf.evaluation.slidingwindow.threshold.HalfMiddleDistance;
 import swf.evaluation.slidingwindow.threshold.HalfMinDistance;
+import swf.evaluation.slidingwindow.threshold.Peaking;
 import swf.evaluation.slidingwindow.windowsize.Average;
 import swf.evaluation.slidingwindow.windowsize.Max;
 import swf.evaluation.slidingwindow.windowsize.Middle;
@@ -29,9 +29,9 @@ import swf.filter.Factory;
 import swf.filter.factory.Estimate;
 import swf.filter.factory.TrueFilter;
 import swf.measure.Distance;
-import swf.measure.timeseries.AverageEstimate;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
+import swf.measure.timeseries.LengthNormalizedEstimate;
 import swf.measure.timeseries.NormalizeDistance;
 import swf.measure.timeseries.Variance;
 import swf.measure.timeseries.dynamictimewarping.AdjustmentWindowCondition;
@@ -56,7 +56,8 @@ public class App {
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
     Collections.sort(swEvaList);
     Collections.reverse(swEvaList);
-    String output = "distance;filter;window;threshold;precision;recall;f1score;accuracy;#(nnc)\n";
+    String output = "distance;scb;filter;window;threshold;precision_μ;recall_μ;f1score_μ;"
+        + "accuracy;#(nnc)\n";
     for (SlidingWindow swEva : swEvaList) {
       output += swEva.getDistName() + ";" + swEva.getFilterName() + ";"
           + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
@@ -88,7 +89,9 @@ public class App {
   ) {
     LinkedList<SlidingWindow> evaList = new LinkedList<SlidingWindow>();
     LinkedList<Future<SlidingWindow>> futureList = new LinkedList<Future<SlidingWindow>>();
-    ExecutorService service = Executors.newFixedThreadPool(4);
+    int cores = Runtime.getRuntime().availableProcessors();
+    System.out.println("#(core):" + cores + "\n");
+    ExecutorService service = Executors.newFixedThreadPool(cores);
     HashMap<String, Distance<TimeSeries<Accel>>> distHashMap = getDistances();
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
     HashMap<String, Factory<TimeSeries<Accel>>> filterHashMap = getFilters();
@@ -159,8 +162,8 @@ public class App {
     hashMap.put("HalfAverageDistance", new HalfAverageDistance());
     hashMap.put("HalfMinDistance", new HalfMinDistance());
     hashMap.put("HalfMiddleDistance", new HalfMiddleDistance());
-    hashMap.put("Cheating(1.1)", new Cheating(1.1));
-    hashMap.put("Cheating(1.2)", new Cheating(1.2));
+    hashMap.put("Peaking(1.1)", new Peaking(1.1));
+    hashMap.put("Peaking(1.2)", new Peaking(1.2));
     return hashMap;
   }
 
@@ -172,19 +175,20 @@ public class App {
     Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
+      String pro = Integer.toString((int)(100 * (factor * 2 - 1))) + "%";
       hashMap.put(
-          "CF(" + factor + ")",
+          "CE(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
       );
       hashMap.put(
-          "ACF(" + factor + ")",
+          "LNCE(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(
-              new AverageEstimate<Accel>(complexityEstimate),
+              new LengthNormalizedEstimate<Accel>(complexityEstimate),
               factor
           )
       );
       hashMap.put(
-          "VF(" + factor + ")",
+          "VAR(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(
               new Variance<Accel>(
                   new EuclideanDistance(),
@@ -215,11 +219,11 @@ public class App {
     for (String conditionName : conditions.keySet()) {
       AdjustmentWindowCondition condition = conditions.get(conditionName);
       hashMap.put(
-          "DTW " + conditionName,
+          "DTW;" + conditionName,
           new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition)
       );
       hashMap.put(
-          "NDTW " + conditionName,
+          "ηDTW;" + conditionName,
           new NormalizeDistance<Accel>(
               new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition),
               new Add(),
@@ -233,14 +237,14 @@ public class App {
   private static HashMap<String, AdjustmentWindowCondition> getConditions() {
     HashMap<String, AdjustmentWindowCondition> hashMap =
         new HashMap<String, AdjustmentWindowCondition>();
-    hashMap.put("", new NoCondition());
+    hashMap.put("200%", new NoCondition());
     double[] factors = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
         0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19,
         0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29,
         0.3, 0.4, 0.6, 0.8};
     for (int i = 0; i < factors.length; i++) {
       hashMap.put(
-          "SCB(" + Double.toString(factors[i]) + ")",
+          Integer.toString((int)(200 * factors[i])) + "%",
           new SakoeChibaBand(factors[i])
       );
     }

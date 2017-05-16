@@ -3,10 +3,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import swf.TimeSeries;
 import swf.measure.Estimate;
-import swf.measure.timeseries.AverageEstimate;
+import swf.measure.timeseries.LengthNormalizedEstimate;
 import swf.timeseries.Point;
 
-public class AverageEstimateTest {
+public class LengthNormalizedEstimateTest {
   @Test
   public void testEstimate() {
     TimeSeries<Integer> intTs = new TimeSeries<Integer>();
@@ -18,6 +18,6 @@ public class AverageEstimateTest {
         return (ts.size() * ts.size()) / 2.0;
       }
     };
-    assertEquals(8281.0 / 180, new AverageEstimate<Integer>(estimate).estimate(intTs), 0);
+    assertEquals(8281.0 / 180, new LengthNormalizedEstimate<Integer>(estimate).estimate(intTs), 0);
   }
 }
