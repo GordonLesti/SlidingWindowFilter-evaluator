@@ -3,12 +3,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import swf.TimeSeries;
 import swf.measure.Distance;
-import swf.measure.timeseries.NormalizeDistance;
+import swf.measure.timeseries.NormalizedDistance;
 import swf.operator.Add;
 import swf.operator.ScalarMult;
 import swf.timeseries.Point;
 
-public class NormalizeDistanceTest {
+public class NormalizedDistanceTest {
   @Test
   public void testDistance() {
     TimeSeries<Integer> ts1 = new TimeSeries<Integer>();
@@ -22,7 +22,7 @@ public class NormalizeDistanceTest {
     ts2.add(new Point<Integer>(-5));
     assertEquals(
         65,
-        new NormalizeDistance<Integer>(
+        new NormalizedDistance<Integer>(
             new Distance<TimeSeries<Integer>>() {
               public double distance(TimeSeries<Integer> intTs1, TimeSeries<Integer> intTs2) {
                 int sum1 = 0;

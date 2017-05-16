@@ -32,7 +32,7 @@ import swf.measure.Distance;
 import swf.measure.timeseries.Complexity;
 import swf.measure.timeseries.DynamicTimeWarping;
 import swf.measure.timeseries.LengthNormalizedEstimate;
-import swf.measure.timeseries.NormalizeDistance;
+import swf.measure.timeseries.NormalizedDistance;
 import swf.measure.timeseries.Variance;
 import swf.measure.timeseries.dynamictimewarping.AdjustmentWindowCondition;
 import swf.measure.timeseries.dynamictimewarping.NoCondition;
@@ -224,7 +224,7 @@ public class App {
       );
       hashMap.put(
           "ηDTW;" + conditionName,
-          new NormalizeDistance<Accel>(
+          new NormalizedDistance<Accel>(
               new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition),
               new Add(),
               new ScalarMult()

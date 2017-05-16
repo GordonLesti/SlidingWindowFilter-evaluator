@@ -6,15 +6,15 @@ import swf.operator.Add;
 import swf.operator.ScalarMult;
 import swf.timeseries.Point;
 
-public class NormalizeDistance<T> implements Distance<TimeSeries<T>> {
+public class NormalizedDistance<T> implements Distance<TimeSeries<T>> {
   private Distance<TimeSeries<T>> distance;
   private Add<T> add;
   private ScalarMult<T> mult;
 
   /**
-   * Creates a NormalizeDistance that normalizes time series before calculating distance.
+   * Creates a NormalizedDistance that normalizes time series before calculating distance.
    */
-  public NormalizeDistance(Distance<TimeSeries<T>> distance, Add<T> add, ScalarMult<T> mult) {
+  public NormalizedDistance(Distance<TimeSeries<T>> distance, Add<T> add, ScalarMult<T> mult) {
     this.distance = distance;
     this.add = add;
     this.mult = mult;
