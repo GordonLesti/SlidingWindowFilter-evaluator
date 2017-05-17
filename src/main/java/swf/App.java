@@ -1,7 +1,6 @@
 package swf;
 
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,17 +46,8 @@ public class App {
    */
   public static void main(String[] args) {
     List<TimeSeries<Accel>> records = getRecords();
-    System.out.println("Distance:\n");
-    List<swf.evaluation.Distance> distEvaList = getDistanceEvaluator(records);
-    Collections.sort(distEvaList);
-    Collections.reverse(distEvaList);
-    for (swf.evaluation.Distance distEva : distEvaList) {
-      System.out.println(distEva.getName() + " " + distEva.getSuccessQuotient());
-    }
     System.out.println("\nSlidingWindow:\n");
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
-    Collections.sort(swEvaList);
-    Collections.reverse(swEvaList);
     String output = "distance;scb;filter;window;threshold;precision_μ;recall_μ;f1score_μ;"
         + "#(nnc);";
     int recordCount = records.size();
@@ -101,8 +91,8 @@ public class App {
   ) {
     LinkedList<SlidingWindow> evaList = new LinkedList<SlidingWindow>();
     LinkedList<Future<SlidingWindow>> futureList = new LinkedList<Future<SlidingWindow>>();
-    int cores = Runtime.getRuntime().availableProcessors();
-    System.out.println("#(core):" + cores + "\n");
+    int cores = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
+    System.out.println("#(threads):" + cores + "\n");
     ExecutorService service = Executors.newFixedThreadPool(cores);
     HashMap<String, Distance<TimeSeries<Accel>>> distHashMap = getDistances();
     HashMap<String, WindowSize> windowSizeHashMap = getWindowSizes();
@@ -148,24 +138,6 @@ public class App {
     }
     service.shutdownNow();
     System.out.println(fullSize + "/" + fullSize);
-    return evaList;
-  }
-
-  private static List<swf.evaluation.Distance> getDistanceEvaluator(
-      List<TimeSeries<Accel>> tsList
-  ) {
-    LinkedList<swf.evaluation.Distance> evaList = new LinkedList<swf.evaluation.Distance>();
-    HashMap<String, Distance<TimeSeries<Accel>>> hashMap = getDistances();
-    for (String name : hashMap.keySet()) {
-      evaList.add(
-          new swf.evaluation.Distance(
-              tsList,
-              hashMap.get(name),
-              new FullSearch<TimeSeries<Accel>>(),
-              name
-          )
-      );
-    }
     return evaList;
   }
 
