@@ -39,6 +39,7 @@ import swf.measure.timeseries.dynamictimewarping.NoCondition;
 import swf.measure.timeseries.dynamictimewarping.SakoeChibaBand;
 import swf.nnc.factory.FullSearch;
 import swf.timeseries.normalizer.ZeroMean;
+import swf.timeseries.normalizer.ZeroMeanOneVariance;
 
 public class App {
   /**
@@ -161,10 +162,10 @@ public class App {
   private static HashMap<String, Threshold> getThresholds() {
     HashMap<String, Threshold> hashMap = new HashMap<String, Threshold>();
     hashMap.put("HalfAverageDistance", new HalfAverageDistance());
-    // hashMap.put("HalfMinDistance", new HalfMinDistance());
-    // hashMap.put("HalfMiddleDistance", new HalfMiddleDistance());
-    // hashMap.put("Peaking(1.1)", new Peaking(1.1));
-    // hashMap.put("Peaking(1.2)", new Peaking(1.2));
+    hashMap.put("HalfMinDistance", new HalfMinDistance());
+    hashMap.put("HalfMiddleDistance", new HalfMiddleDistance());
+    hashMap.put("Peaking(1.1)", new Peaking(1.1));
+    hashMap.put("Peaking(1.2)", new Peaking(1.2));
     return hashMap;
   }
 
@@ -177,10 +178,10 @@ public class App {
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
       String pro = Integer.toString((int)(100 * (factor * 2 - 1))) + "%";
-    //   hashMap.put(
-    //       "CE(" + pro + ")",
-    //       new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
-    //   );
+      hashMap.put(
+          "CE(" + pro + ")",
+          new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
+      );
       hashMap.put(
           "LNCE(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(
@@ -188,26 +189,26 @@ public class App {
               factor
           )
       );
-    //   hashMap.put(
-    //       "VAR(" + pro + ")",
-    //       new Estimate<TimeSeries<Accel>>(
-    //           new Variance<Accel>(
-    //               new EuclideanDistance(),
-    //               new Add(),
-    //               new ScalarMult()
-    //           ),
-    //           factor
-    //       )
-    //   );
+      hashMap.put(
+          "VAR(" + pro + ")",
+          new Estimate<TimeSeries<Accel>>(
+              new Variance<Accel>(
+                  new EuclideanDistance(),
+                  new Add(),
+                  new ScalarMult()
+              ),
+              factor
+          )
+      );
     }
     return hashMap;
   }
 
   private static HashMap<String, WindowSize> getWindowSizes() {
     HashMap<String, WindowSize> hashMap = new HashMap<String, WindowSize>();
-    // hashMap.put("Max", new Max());
-    // hashMap.put("Min", new Min());
-    // hashMap.put("Average", new Average());
+    hashMap.put("Max", new Max());
+    hashMap.put("Min", new Min());
+    hashMap.put("Average", new Average());
     hashMap.put("Middle", new Middle());
     return hashMap;
   }
@@ -219,15 +220,26 @@ public class App {
     HashMap<String, AdjustmentWindowCondition> conditions = getConditions();
     for (String conditionName : conditions.keySet()) {
       AdjustmentWindowCondition condition = conditions.get(conditionName);
-    //   hashMap.put(
-    //       "DTW;" + conditionName,
-    //       new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition)
-    //   );
+      hashMap.put(
+          "DTW;" + conditionName,
+          new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition)
+      );
       hashMap.put(
           "ηDTW;" + conditionName,
           new NormalizedDistance<Accel>(
               new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition),
               new ZeroMean<Accel>(new Add(),  new ScalarMult())
+          )
+      );
+      hashMap.put(
+          "η'DTW;" + conditionName,
+          new NormalizedDistance<Accel>(
+              new DynamicTimeWarping<Accel>(new EuclideanDistance(), condition),
+              new ZeroMeanOneVariance<Accel>(
+                  new EuclideanDistance(),
+                  new Add(),
+                  new ScalarMult()
+              )
           )
       );
     }
@@ -240,7 +252,7 @@ public class App {
     hashMap.put("200%", new NoCondition());
     double[] factors = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
         0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19,
-        // 0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29,
+        0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29,
         0.3, 0.4, 0.6, 0.8};
     for (int i = 0; i < factors.length; i++) {
       hashMap.put(
