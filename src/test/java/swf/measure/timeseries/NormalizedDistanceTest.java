@@ -7,6 +7,7 @@ import swf.measure.timeseries.NormalizedDistance;
 import swf.operator.Add;
 import swf.operator.ScalarMult;
 import swf.timeseries.Point;
+import swf.timeseries.normalizer.ZeroMean;
 
 public class NormalizedDistanceTest {
   @Test
@@ -38,16 +39,18 @@ public class NormalizedDistanceTest {
                 return Math.abs(sum1 - sum2);
               }
             },
-            new Add<Integer>() {
-              public Integer add(Integer int1, Integer int2) {
-                return int1 + int2;
+            new ZeroMean<Integer>(
+              new Add<Integer>() {
+                public Integer add(Integer int1, Integer int2) {
+                  return int1 + int2;
+                }
+              },
+              new ScalarMult<Integer>() {
+                public Integer mult(double scalar, Integer num) {
+                  return (int) Math.round(scalar * num);
+                }
               }
-            },
-            new ScalarMult<Integer>() {
-              public Integer mult(double scalar, Integer num) {
-                return (int) Math.round(scalar * num);
-              }
-            }
+            )
         ).distance(ts1, ts2),
         0
     );
