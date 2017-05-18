@@ -48,29 +48,30 @@ public class App {
     List<TimeSeries<Accel>> records = getRecords();
     System.out.println("\nSlidingWindow:\n");
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
-    String output = "distance;scb;filter;window;threshold;precision_μ;recall_μ;f1score_μ;"
-        + "#(nnc);";
-    int recordCount = records.size();
-    for (int i = 0; i < recordCount; i++) {
-      output += "Record-" + (i + 1) + " precision_μ;Record-" + (i + 1) + " recall_μ;Record-"
-          + (i + 1) + " f1score_μ;";
-    }
-    output += "\n";
-    for (SlidingWindow swEva : swEvaList) {
-      output += swEva.getDistName() + ";" + swEva.getFilterName() + ";"
-          + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
-          + swEva.getMicroPrecision(0, recordCount) + ";" + swEva.getMicroRecall(0, recordCount)
-          + ";" + swEva.getMicroFscore(1, 0, recordCount) + ";" + swEva.getNncCallCount() + ";";
-      for (int i = 0; i < recordCount; i++) {
-        output += swEva.getMicroPrecision(i, i + 1) + ";" + swEva.getMicroRecall(i, i + 1) + ";"
-            + swEva.getMicroFscore(1, i, i + 1) + ";";
-      }
-      output += "\n";
-    }
     String outputFilename = "build/resources/main/swf-result.csv";
     try {
       PrintWriter writer = new PrintWriter(outputFilename, "UTF-8");
+      String output = "distance;scb;filter;window;threshold;precision_μ;recall_μ;f1score_μ;"
+          + "#(nnc);";
+      int recordCount = records.size();
+      for (int i = 0; i < recordCount; i++) {
+        output += "Record-" + (i + 1) + " precision_μ;Record-" + (i + 1) + " recall_μ;Record-"
+            + (i + 1) + " f1score_μ;";
+      }
+      output += "\n";
       writer.print(output);
+      for (SlidingWindow swEva : swEvaList) {
+        output = swEva.getDistName() + ";" + swEva.getFilterName() + ";"
+            + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
+            + swEva.getMicroPrecision(0, recordCount) + ";" + swEva.getMicroRecall(0, recordCount)
+            + ";" + swEva.getMicroFscore(1, 0, recordCount) + ";" + swEva.getNncCallCount() + ";";
+        for (int i = 0; i < recordCount; i++) {
+          output += swEva.getMicroPrecision(i, i + 1) + ";" + swEva.getMicroRecall(i, i + 1) + ";"
+              + swEva.getMicroFscore(1, i, i + 1) + ";";
+        }
+        output += "\n";
+        writer.print(output);
+      }
       writer.close();
     } catch (Exception ioEx) {
       System.out.println("Unable to write result into file " + outputFilename);
@@ -129,7 +130,7 @@ public class App {
       for (Future<SlidingWindow> future : futureList) {
         evaList.add(future.get());
         counter++;
-        System.out.print(counter + "/" + fullSize + "\r");
+        System.out.println(counter + "/" + fullSize);
       }
     } catch (InterruptedException ex) {
       ex.printStackTrace();
