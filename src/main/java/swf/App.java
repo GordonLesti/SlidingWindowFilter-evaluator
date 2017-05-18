@@ -144,11 +144,11 @@ public class App {
 
   private static HashMap<String, Threshold> getThresholds() {
     HashMap<String, Threshold> hashMap = new HashMap<String, Threshold>();
-    hashMap.put("HalfAverageDistance", new HalfAverageDistance());
-    hashMap.put("HalfMinDistance", new HalfMinDistance());
-    hashMap.put("HalfMiddleDistance", new HalfMiddleDistance());
-    hashMap.put("Peaking(1.1)", new Peaking(1.1));
-    hashMap.put("Peaking(1.2)", new Peaking(1.2));
+    hashMap.put("HAveD", new HalfAverageDistance());
+    hashMap.put("HMinD", new HalfMinDistance());
+    hashMap.put("HMidD", new HalfMiddleDistance());
+    hashMap.put("Peak(1.1)", new Peaking(1.1));
+    hashMap.put("Peak(1.2)", new Peaking(1.2));
     return hashMap;
   }
 
@@ -160,7 +160,7 @@ public class App {
     Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
-      String pro = Integer.toString((int)(100 * (factor * 2 - 1))) + "%";
+      String pro = Integer.toString((int)(100 * (factor * 2 - 1)));
       hashMap.put(
           "CE(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
@@ -191,8 +191,8 @@ public class App {
     HashMap<String, WindowSize> hashMap = new HashMap<String, WindowSize>();
     hashMap.put("Max", new Max());
     hashMap.put("Min", new Min());
-    hashMap.put("Average", new Average());
-    hashMap.put("Middle", new Middle());
+    hashMap.put("Ave", new Average());
+    hashMap.put("Mid", new Middle());
     return hashMap;
   }
 
@@ -232,14 +232,14 @@ public class App {
   private static HashMap<String, AdjustmentWindowCondition> getConditions() {
     HashMap<String, AdjustmentWindowCondition> hashMap =
         new HashMap<String, AdjustmentWindowCondition>();
-    hashMap.put("200%", new NoCondition());
+    hashMap.put("200", new NoCondition());
     double[] factors = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
         0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19,
         0.2, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29,
         0.3, 0.4, 0.6, 0.8};
     for (int i = 0; i < factors.length; i++) {
       hashMap.put(
-          Integer.toString((int)(200 * factors[i])) + "%",
+          Integer.toString((int)(200 * factors[i])),
           new SakoeChibaBand(factors[i])
       );
     }
