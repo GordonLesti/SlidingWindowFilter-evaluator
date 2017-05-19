@@ -151,7 +151,10 @@ public class App {
       for (Future<SlidingWindow> future : futureList) {
         evaList.add(future.get());
         counter++;
-        System.out.println(counter + "/" + fullSize);
+        System.out.print(".");
+        if (counter % 100 == 0) {
+          System.out.print(" " + counter + "/" + fullSize + "\n");
+        }
       }
     } catch (InterruptedException ex) {
       ex.printStackTrace();
@@ -159,7 +162,7 @@ public class App {
       ex.printStackTrace();
     }
     service.shutdownNow();
-    System.out.println(fullSize + "/" + fullSize);
+    System.out.print(" " + fullSize + "/" + fullSize + "\n");
     return evaList;
   }
 
