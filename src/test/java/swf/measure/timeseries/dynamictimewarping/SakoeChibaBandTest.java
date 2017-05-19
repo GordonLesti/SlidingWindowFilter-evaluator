@@ -57,10 +57,10 @@ public class SakoeChibaBandTest {
 
   private String[] createConditionMatrix4x7window3() {
     String[] conditionMatrix = {
-        "1111000",
-        "1111110",
-        "0111111",
-        "0001111"
+        "1100000",
+        "0111000",
+        "0001110",
+        "0000011"
     };
     return conditionMatrix;
   }

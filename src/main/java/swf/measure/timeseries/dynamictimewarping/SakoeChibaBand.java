@@ -12,10 +12,7 @@ public class SakoeChibaBand implements AdjustmentWindowCondition {
    */
   public boolean isConditionFulfilled(int indexI, int indexJ, int lengthI, int lengthJ) {
     int middleJ = (int) Math.ceil((1.0 * lengthJ * indexI) / lengthI);
-    int window = Math.max(
-        (int) Math.round(lengthJ * this.conditionFactor),
-        Math.abs(lengthI - lengthJ)
-    );
+    int window = (int) Math.round(lengthJ * this.conditionFactor);
     return indexJ >= Math.max(0, middleJ - window)
         && indexJ < Math.min(lengthJ, middleJ + window + lengthJ % 2);
   }
