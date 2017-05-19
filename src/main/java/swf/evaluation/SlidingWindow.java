@@ -92,6 +92,9 @@ public class SlidingWindow implements Callable<SlidingWindow> {
     return this.thresholdName;
   }
 
+  /**
+   * Returns the amount of NNC calls.
+   */
   public int getNncCallCount(int recordFromIndex, int recordToIndex) {
     int sum = 0;
     for (int i = recordFromIndex; i < recordToIndex; i++) {
@@ -119,11 +122,16 @@ public class SlidingWindow implements Callable<SlidingWindow> {
   /**
    * Returns the precision.
    */
-  public double getMicroPrecision(int recordFromIndex, int recordToIndex) {
+  public double getMicroPrecision(
+      int recordFromIndex,
+      int recordToIndex,
+      int gestureFromIndex,
+      int gestureToIndex
+  ) {
     int sumDividend = 0;
     int sumDivisor = 0;
     for (int i = recordFromIndex; i < recordToIndex; i++) {
-      for (int j = 0; j < 8; j++) {
+      for (int j = gestureFromIndex; j < gestureToIndex; j++) {
         sumDividend += this.getTruePositve(i, j);
         sumDivisor += this.getTruePositve(i, j) + this.getFalsePositive(i, j);
       }
@@ -134,11 +142,16 @@ public class SlidingWindow implements Callable<SlidingWindow> {
   /**
    * Returns the recall.
    */
-  public double getMicroRecall(int recordFromIndex, int recordToIndex) {
+  public double getMicroRecall(
+      int recordFromIndex,
+      int recordToIndex,
+      int gestureFromIndex,
+      int gestureToIndex
+  ) {
     int sumDividend = 0;
     int sumDivisor = 0;
     for (int i = recordFromIndex; i < recordToIndex; i++) {
-      for (int j = 0; j < 8; j++) {
+      for (int j = gestureFromIndex; j < gestureToIndex; j++) {
         sumDividend += this.getTruePositve(i, j);
         sumDivisor += this.getTruePositve(i, j) + this.getFalseNegative(i, j);
       }
@@ -149,9 +162,25 @@ public class SlidingWindow implements Callable<SlidingWindow> {
   /**
    * Returns the F Score of the SlidingWindow.
    */
-  public double getMicroFscore(double beta, int recordFromIndex, int recordToIndex) {
-    double precision = this.getMicroPrecision(recordFromIndex, recordToIndex);
-    double recall = this.getMicroRecall(recordFromIndex, recordToIndex);
+  public double getMicroFscore(
+      double beta,
+      int recordFromIndex,
+      int recordToIndex,
+      int gestureFromIndex,
+      int gestureToIndex
+  ) {
+    double precision = this.getMicroPrecision(
+        recordFromIndex,
+        recordToIndex,
+        gestureFromIndex,
+        gestureToIndex
+    );
+    double recall = this.getMicroRecall(
+        recordFromIndex,
+        recordToIndex,
+        gestureFromIndex,
+        gestureToIndex
+    );
     double betaSquared = beta * beta;
     return ((1 + betaSquared) * precision * recall) / (betaSquared * precision + recall);
   }

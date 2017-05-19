@@ -50,7 +50,6 @@ public class App {
     List<SlidingWindow> swEvaList = getSlidingWindowEvaluator(records);
     String outputFilename = "build/resources/main/swf-result.csv";
     try {
-      PrintWriter writer = new PrintWriter(outputFilename, "UTF-8");
       String output = "distance;scb;filter;window;threshold;precision_μ;recall_μ;f1score_μ;"
           + "#(nnc);";
       int recordCount = records.size();
@@ -58,17 +57,31 @@ public class App {
         output += "rec" + (i + 1) + "-precision_μ;rec" + (i + 1) + "-recall_μ;rec" + (i + 1)
             + "-f1score_μ;rec" + (i + 1) + "-#(nnc);";
       }
+      String[] gestureChars = {"A", "B", "C", "D", "E", "F", "G", "H"};
+      for (int i = 0; i < 8; i++) {
+        output += "Ges" + gestureChars[i] + "-precision;" + "Ges" + gestureChars[i] + "-recall;"
+            + "Ges" + gestureChars[i] + "-f1score;";
+      }
       output = output.substring(0, output.length() - 1) + "\n";
+      PrintWriter writer = new PrintWriter(outputFilename, "UTF-8");
       writer.print(output);
       for (SlidingWindow swEva : swEvaList) {
         output = swEva.getDistName() + ";" + swEva.getFilterName() + ";"
             + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
-            + swEva.getMicroPrecision(0, recordCount) + ";" + swEva.getMicroRecall(0, recordCount)
-            + ";" + swEva.getMicroFscore(1, 0, recordCount) + ";"
+            + swEva.getMicroPrecision(0, recordCount, 0, 8) + ";"
+            + swEva.getMicroRecall(0, recordCount, 0, 8) + ";"
+            + swEva.getMicroFscore(1, 0, recordCount, 0, 8) + ";"
             + swEva.getNncCallCount(0, recordCount) + ";";
         for (int i = 0; i < recordCount; i++) {
-          output += swEva.getMicroPrecision(i, i + 1) + ";" + swEva.getMicroRecall(i, i + 1) + ";"
-              + swEva.getMicroFscore(1, i, i + 1) + ";" + swEva.getNncCallCount(i, i + 1) + ";";
+          output += swEva.getMicroPrecision(i, i + 1, 0, 8) + ";"
+              + swEva.getMicroRecall(i, i + 1, 0, 8) + ";"
+              + swEva.getMicroFscore(1, i, i + 1, 0, 8) + ";"
+              + swEva.getNncCallCount(i, i + 1) + ";";
+        }
+        for (int i = 0; i < 8; i++) {
+          output += swEva.getMicroPrecision(0, recordCount, i, i + 1) + ";"
+              + swEva.getMicroRecall(0, recordCount, i, i + 1) + ";"
+              + swEva.getMicroFscore(1, 0, recordCount, i, i + 1) + ";";
         }
         output = output.substring(0, output.length() - 1) + "\n";
         writer.print(output);
