@@ -58,7 +58,7 @@ public class App {
         output += "Record-" + (i + 1) + " precision_μ;Record-" + (i + 1) + " recall_μ;Record-"
             + (i + 1) + " f1score_μ;";
       }
-      output += "\n";
+      output = output.substring(0, output.length() - 1) + "\n";
       writer.print(output);
       for (SlidingWindow swEva : swEvaList) {
         output = swEva.getDistName() + ";" + swEva.getFilterName() + ";"
@@ -69,7 +69,7 @@ public class App {
           output += swEva.getMicroPrecision(i, i + 1) + ";" + swEva.getMicroRecall(i, i + 1) + ";"
               + swEva.getMicroFscore(1, i, i + 1) + ";";
         }
-        output += "\n";
+        output = output.substring(0, output.length() - 1) + "\n";
         writer.print(output);
       }
       writer.close();
