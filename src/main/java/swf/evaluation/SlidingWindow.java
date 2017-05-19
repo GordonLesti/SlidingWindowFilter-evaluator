@@ -1,6 +1,5 @@
 package swf.evaluation;
 
-import java.lang.Comparable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -14,7 +13,7 @@ import swf.nnc.Factory;
 import swf.nnc.NearestNeighbourClassificator;
 import swf.timeseries.Point;
 
-public class SlidingWindow implements Comparable<SlidingWindow>, Callable<SlidingWindow> {
+public class SlidingWindow implements Callable<SlidingWindow> {
   private List<TimeSeries<Accel>> tsList;
   private Distance<TimeSeries<Accel>> distance;
   private Factory<TimeSeries<Accel>> nncFactory;
@@ -30,7 +29,7 @@ public class SlidingWindow implements Comparable<SlidingWindow>, Callable<Slidin
   private int[][] trueNegative;
   private int[][] falsePositive;
   private int[][] falseNegative;
-  private int nncCallCount;
+  private int[] nncCallCount;
 
   /**
    * Creates an evaluator for sliding window filters on TimeSeries of Accel data.
@@ -62,7 +61,7 @@ public class SlidingWindow implements Comparable<SlidingWindow>, Callable<Slidin
     this.trueNegative = new int[recordCount][8];
     this.falsePositive = new int[recordCount][8];
     this.falseNegative = new int[recordCount][8];
-    this.nncCallCount = 0;
+    this.nncCallCount = new int[recordCount];
   }
 
   /**
@@ -93,8 +92,12 @@ public class SlidingWindow implements Comparable<SlidingWindow>, Callable<Slidin
     return this.thresholdName;
   }
 
-  public int getNncCallCount() {
-    return this.nncCallCount;
+  public int getNncCallCount(int recordFromIndex, int recordToIndex) {
+    int sum = 0;
+    for (int i = recordFromIndex; i < recordToIndex; i++) {
+      sum += this.nncCallCount[i];
+    }
+    return sum;
   }
 
   public int getTruePositve(int recordIndex, int gestureIndex) {
@@ -153,33 +156,8 @@ public class SlidingWindow implements Comparable<SlidingWindow>, Callable<Slidin
     return ((1 + betaSquared) * precision * recall) / (betaSquared * precision + recall);
   }
 
-  /**
-   * Compares two SlidingWindow by f1Score.
-   */
-  public int compareTo(SlidingWindow swf) {
-    double f1Score = this.getMicroFscore(1, 0, this.tsList.size());
-    double swfF1Score = swf.getMicroFscore(1, 0, this.tsList.size());
-    if (Double.isNaN(f1Score) && Double.isNaN(swfF1Score)) {
-      return 0;
-    }
-    if (f1Score > swfF1Score || Double.isNaN(swfF1Score)) {
-      return 1;
-    }
-    if (f1Score < swfF1Score || Double.isNaN(f1Score)) {
-      return -1;
-    }
-    int nncCount = this.getNncCallCount();
-    int swfNnCCount = swf.getNncCallCount();
-    if (nncCount < swfNnCCount) {
-      return 1;
-    }
-    if (nncCount > swfNnCCount) {
-      return -1;
-    }
-    return 0;
-  }
-
   private void slideOverTimeSeries(TimeSeries<Accel> ts, int recordIndex) {
+    this.nncCallCount[recordIndex] = 0;
     LinkedList<TimeSeries<Accel>> trainingData = new LinkedList<TimeSeries<Accel>>();
     LinkedList<TimeSeries<Accel>> testData = new LinkedList<TimeSeries<Accel>>();
     for (int i = 1; i < 9; i++) {
@@ -204,7 +182,7 @@ public class SlidingWindow implements Comparable<SlidingWindow>, Callable<Slidin
       TimeSeries<Accel> window = record.subTimeSeries(time, time + windowSize);
       if (filter.filter(window)) {
         TimeSeries<Accel> nn = nnc.nearestNeighbour(window);
-        this.nncCallCount++;
+        this.nncCallCount[recordIndex]++;
         double dist = this.distance.distance(window, nn);
         if (dist <= thresholds[trainingData.indexOf(nn)]) {
           for (int i = time; i < time + windowSize; i++) {

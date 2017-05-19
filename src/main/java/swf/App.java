@@ -55,8 +55,8 @@ public class App {
           + "#(nnc);";
       int recordCount = records.size();
       for (int i = 0; i < recordCount; i++) {
-        output += "Record-" + (i + 1) + " precision_μ;Record-" + (i + 1) + " recall_μ;Record-"
-            + (i + 1) + " f1score_μ;";
+        output += "rec" + (i + 1) + "-precision_μ;rec" + (i + 1) + "-recall_μ;rec" + (i + 1)
+            + "-f1score_μ;rec" + (i + 1) + "-#(nnc);";
       }
       output = output.substring(0, output.length() - 1) + "\n";
       writer.print(output);
@@ -64,10 +64,11 @@ public class App {
         output = swEva.getDistName() + ";" + swEva.getFilterName() + ";"
             + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
             + swEva.getMicroPrecision(0, recordCount) + ";" + swEva.getMicroRecall(0, recordCount)
-            + ";" + swEva.getMicroFscore(1, 0, recordCount) + ";" + swEva.getNncCallCount() + ";";
+            + ";" + swEva.getMicroFscore(1, 0, recordCount) + ";"
+            + swEva.getNncCallCount(0, recordCount) + ";";
         for (int i = 0; i < recordCount; i++) {
           output += swEva.getMicroPrecision(i, i + 1) + ";" + swEva.getMicroRecall(i, i + 1) + ";"
-              + swEva.getMicroFscore(1, i, i + 1) + ";";
+              + swEva.getMicroFscore(1, i, i + 1) + ";" + swEva.getNncCallCount(i, i + 1) + ";";
         }
         output = output.substring(0, output.length() - 1) + "\n";
         writer.print(output);
