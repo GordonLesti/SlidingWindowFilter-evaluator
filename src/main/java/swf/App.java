@@ -162,10 +162,6 @@ public class App {
       double factor = filterBlurFactors[i];
       String pro = Integer.toString((int)(100 * (factor * 2 - 1)));
       hashMap.put(
-          "CE(" + pro + ")",
-          new Estimate<TimeSeries<Accel>>(complexityEstimate, factor)
-      );
-      hashMap.put(
           "LNCE(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(
               new LengthNormalizedEstimate<Accel>(complexityEstimate),
