@@ -68,20 +68,20 @@ public class App {
       for (SlidingWindow swEva : swEvaList) {
         output = swEva.getDistName() + ";" + swEva.getFilterName() + ";"
             + swEva.getWindowSizeName() + ";" + swEva.getThesholdName() + ";"
-            + swEva.getMicroPrecision(0, recordCount, 0, 8) + ";"
-            + swEva.getMicroRecall(0, recordCount, 0, 8) + ";"
-            + swEva.getMicroFscore(1, 0, recordCount, 0, 8) + ";"
-            + swEva.getNncCallCount(0, recordCount) + ";";
+            + renderDouble(swEva.getMicroPrecision(0, recordCount, 0, 8)) + ";"
+            + renderDouble(swEva.getMicroRecall(0, recordCount, 0, 8)) + ";"
+            + renderDouble(swEva.getMicroFscore(1, 0, recordCount, 0, 8)) + ";"
+            + renderDouble(swEva.getNncCallCount(0, recordCount)) + ";";
         for (int i = 0; i < recordCount; i++) {
-          output += swEva.getMicroPrecision(i, i + 1, 0, 8) + ";"
-              + swEva.getMicroRecall(i, i + 1, 0, 8) + ";"
-              + swEva.getMicroFscore(1, i, i + 1, 0, 8) + ";"
-              + swEva.getNncCallCount(i, i + 1) + ";";
+          output += renderDouble(swEva.getMicroPrecision(i, i + 1, 0, 8)) + ";"
+              + renderDouble(swEva.getMicroRecall(i, i + 1, 0, 8)) + ";"
+              + renderDouble(swEva.getMicroFscore(1, i, i + 1, 0, 8)) + ";"
+              + renderDouble(swEva.getNncCallCount(i, i + 1)) + ";";
         }
         for (int i = 0; i < 8; i++) {
-          output += swEva.getMicroPrecision(0, recordCount, i, i + 1) + ";"
-              + swEva.getMicroRecall(0, recordCount, i, i + 1) + ";"
-              + swEva.getMicroFscore(1, 0, recordCount, i, i + 1) + ";";
+          output += renderDouble(swEva.getMicroPrecision(0, recordCount, i, i + 1)) + ";"
+              + renderDouble(swEva.getMicroRecall(0, recordCount, i, i + 1)) + ";"
+              + renderDouble(swEva.getMicroFscore(1, 0, recordCount, i, i + 1)) + ";";
         }
         output = output.substring(0, output.length() - 1) + "\n";
         writer.print(output);
@@ -90,6 +90,13 @@ public class App {
     } catch (Exception ioEx) {
       System.out.println("Unable to write result into file " + outputFilename);
     }
+  }
+
+  private static String renderDouble(double num) {
+    if (Double.isNaN(num)) {
+      return "";
+    }
+    return Double.toString(num);
   }
 
   private static List<TimeSeries<Accel>> getRecords() {
