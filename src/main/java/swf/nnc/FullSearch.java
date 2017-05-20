@@ -19,9 +19,9 @@ public class FullSearch<T> extends NearestNeighbourClassificator<T> {
     T nn = null;
     for (T curr : this.testData) {
       double dist = this.distance.distance(curr, query);
-      if (dist < min) {
-        min = dist;
+      if (nn == null || dist < min) {
         nn = curr;
+        min = dist;
       }
     }
     return nn;
