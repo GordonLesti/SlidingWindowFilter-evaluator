@@ -184,7 +184,7 @@ public class App {
     Complexity<Accel> complexityEstimate = new Complexity<Accel>(new EuclideanDistance());
     for (int i = 0; i < filterBlurFactors.length; i++) {
       double factor = filterBlurFactors[i];
-      String pro = Integer.toString((int)(100 * (factor * 2 - 1)));
+      int pro = (int) Math.round(100 * (factor * 2 - 1));
       hashMap.put(
           "LNCE(" + pro + ")",
           new Estimate<TimeSeries<Accel>>(
